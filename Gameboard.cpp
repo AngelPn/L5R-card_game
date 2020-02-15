@@ -9,17 +9,22 @@ GameBoard::~GameBoard(){
 }
 
 void GameBoard::initializeGameBoard(int no_players){
-	for(int i=0; i< no_players; i++)
-		players.push_back(new Player());
+	std::string name;
+	for(int i=0; i< no_players; i++){
+		std::cout << "Give player's name: " << std::endl;
+		std::cin >> name;
+		players.push_back(new Player(name));
+	}
 
 		printGameStatistics();
 }
 
 void GameBoard::printGameStatistics(){
+	std::cout << "\nPrinting Statistics: " << std::endl << std::endl;
 	for(int i=0; i< players.size(); i++){
-		cout<< "PLAYER #"<< i<< endl;
+		std::cout<< "PLAYER "<< players[i]->name << " is #"<< i<< std::endl;
 		players[i]->printGameStatistics();
-		cout<< endl;
+		std::cout<< std::endl;
 	}
 }
 
@@ -83,8 +88,8 @@ void GameBoard::gameplay(){
 				}
 				putchar(c);
 				players[i]->battlePhase(&players[c]);
-			} 
-				
+			}
+
 		}
 
 		cout<< "ECONOMY PHASE"<< endl;
