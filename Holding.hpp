@@ -4,8 +4,6 @@
 #include "Card.hpp"
 #include <string>
 
-namespace { int HONOUR= 50; }
-
 class Holding : public BlackCard {
 
 private:
@@ -45,6 +43,8 @@ public:
 	{
 		return harvestValue;
 	}
+
+  virtual unsigned int initialMoney() const {}
 
 	int getType() const
 	{
@@ -145,7 +145,7 @@ private:
 	const unsigned int initialDefense;
 
 public:
-	Stronghold() : Holding("Stronghold", STRONGHOLD), honour(HONOUR--), money(10), initialDefense(5){}
+	Stronghold() : Holding("Stronghold", STRONGHOLD), honour(5), money(10), initialDefense(5){}
 
 	unsigned int get_initialDefense(){ return initialDefense; }
 
@@ -153,6 +153,8 @@ public:
 		std::cout<< "Holding: STRONGHOLD\n";
 		Holding::print();
 	}
+
+  unsigned int initialMoney() const { return this->money; }
 };
 
 #endif
