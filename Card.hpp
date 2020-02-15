@@ -33,6 +33,7 @@ public:
 	virtual int getType() const = 0;
   virtual void print() const = 0; //for the same reasons , the print card function is pure virtual
   void untap() { isTapped = 0; }  //untaps card
+	void tap() { isTapped = 1; } //taps card
 	unsigned int get_cost() const { return this->cost; }
 };
 

@@ -52,6 +52,45 @@ public: //int type-> Personalities type
 	unsigned int get_attack() const { return attack; }
 	unsigned int get_defense() const { return defense; }
 	unsigned int get_honour() const { return honour; }
+	Follower *get_followers() const {
+		if(!followers.empty())
+			return NULL;
+		else return &followers;
+	}
+	Item *get_items() const {
+		if (!items.empty())
+			return NULL;
+		else return &items;
+	}
+
+	void destroyFollower(int position){
+		followers.erase(position);
+	}
+
+	void destroyItem(int position){
+		items.erase(position);
+	}
+
+	void tap_followers(){
+		for(int i=0; i< followers.size(); i++)
+			followers[i].tap();
+	}
+
+	void decrement_durability(){
+		for(int i= 0; i< items.size(); i++){
+			items[i].decrement_durability();
+			if(items[i].get_durability() == 0)
+				destroyItem(i);
+		}
+	}
+
+	void decrement_honour(){
+		honour--;
+	}
+
+	void performSeppuku(){
+		cout<< "I am going to perform Seppuku"<< endl;
+	}
 
 	bool belowBound() const  //returns true if green card bound is not exceeded for this personality, otherwise returns false
 	{

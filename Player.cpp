@@ -233,57 +233,143 @@ void Player::printArmy() const
 }
 
 void Player::battlePhase(Player *p){
-	vector<int> untapped_army; //vector of army's indexes that keeps track of untapped personalities in army
-	for(int i=0; i< army.size(); i++){
-		if(!army[i]->isTapped())
-			untapped_army.push_back(i);
-	}
-	cout<< "Choose the number of untapped Personalities from Army to defense/battle: "<< endl<<
-		"The number of existing untapped Personalities in Army is "<< untapped_army.size()<< endl<<
-		"Type a number from 0 to "<< untapped_army.size()-1<< ": ";
+	//All of the cards in Army are untapped because of the startingPhase
+	cout<< "Choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
+		"The number of existing untapped Personalities in Army is "<< army.size()<< endl<<
+		"Type a number from 0 to "<< army.size()-1<< ": ";
 	int c= getchar();
 	putchar(c);
+
 	//Built up the arena
-	for(int i=0; i< c; i++)
-			arena.push_back(i);
+	cout<< "Choose which of the Personalities in Army you want in Arena: "<< endl<<
+		"Type "<< c<< " different numbers from 0 to "<< army.size()<< ": ";
+	//WE CAN SHOW HIM THE ARMY (printArmy)
+	for(int i=0; i< c; i++){
+		int ci= getchar();
+		putchar(ci);
+		cout<< ", ";
+		arena.push_back(ci); //vector of army's indexes that keeps track of personalities in arena
+	}
 
 	if(p!= NULL){ //If the player has chosen battle
+
+		cout<< "Choose the province of enemy to attack: "<< endl<<
+			"The number of enemy's provinces is "<< p->numberOfProvinces<< endl<<
+			"Type a number from 0 to "<< p->numberOfProvinces-1<< ": ";
+		//WE CAN SHOW HIM THE ENEMY'S PROVINCES (printProvinces)
+		c= getchar();
+		putchar(c);
+
 		//Calculate the total points of attacker and defender
 		int points_attacker= 0, points_defender= 0;
+
 		for(int i= 0; i< arena.size(); i++)
 			points_attacker+= army(arena[i])->get_defense();
+
 		for(int i= 0; i< p->arena.size(); i++)
 			points_defender+= p->army(arena[i])->get_defense();
 
-		int province_defense= p->holdings[0].get_initialDefense(); //Get the defense's point from StrongHold
-		//TO DO: add the defense of personality
+		int province_defense= p->holdings[0].get_initialDefense(); //Get the province defense points from StrongHold
 		points_defender+= province_defense;
-		if(points_attacker - points_defender > province_defense){ //Attacker wins the battle
-			p->provinces.erase(0); //Destroy defender's province
+
+		if(points_attacker - points_defender > province_defense){ //Attacker won the battle, province is destroyed
+			p->provinces.erase(c); //Destroy defender's province
 			p->numberOfProvinces--; //Decrement defender's total number of provinces
-			//Defender looses all of the defensive personalities
+			//Defender loses all of the defensive personalities
 			for(int i=0; i< p->arena.size(); i++)
 				p->army.erase(arena[i]);
 			p->arena.clear();
 		}
-		else{
+		else{ //Province is not destroyed
 			if(points_attacker > points_defender){
-				//Defender looses all of the defensive personalities
+				//Defender loses all of the defensive personalities
 				for(int i=0; i< p->arena.size(); i++)
 					p->army.erase(arena[i]);
 				p->arena.clear();
-				//Attacker looses followers or personalities from arena's army that attack>= points_attacker- points_defender
-				int lost_points= 0;
+
+				//Attacker loses followers or personalities from arena's army that attack>= points_attacker- points_defender
+				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
 
+					Follower *temp= army[arena[k]]->get_followers();
+					if(temp!= NULL){ //If the Personality has followers
+						lost_points+= temp->get_attackBonus();
+						army[arena[k]]->destroyFollower(0); //destroy the follower
+						continue;
+					}
+					else{
+						lost_points+= army[arena[k]]->get_attack();
+						army.erase(arena[k]); //delete the Personality
+						arena.erase(k);
+					}
+
+					if(k == army.size()) break;
+					k++;
 				}
+
+				//Tap every Personality and Followers that have survived
+				for(int i= 0; i< arena.size(); i++){
+					army[arena[i]]->tap_followers();
+					army[arena[i]]->tap();
+					//Items of Personality loses one durability
+					army[arena[i]]->decrement_durability();
+				}
+
 			}
 			else if(points_attacker == points_defender){
+				//Attacker loses all of the attacking personalities and followers
+				for(int i=0; i< arena.size(); i++)
+					army.erase(arena[i]);
+				arena.clear();
 
+				//Defender loses all of the defensive personalities and followers
+				for(int i=0; i< p->arena.size(); i++)
+					p->army.erase(arena[i]);
+				p->arena.clear();
 			}
 			else{
+				//Attacker loses all of the attacking personalities and followers
+				for(int i=0; i< arena.size(); i++)
+					army.erase(arena[i]);
+				arena.clear();
 
+				//Defender loses followers or personalities from arena's army that attack>= points_attacker- points_defender
+				int lost_points= 0, k= 0;
+				while(lost_points < (points_defender - points_defender)){
+
+					Follower *temp= p->army[arena[k]]->get_followers();
+					if(temp!= NULL){ //If the Personality has followers
+						lost_points+= temp->get_attackBonus();
+						p->army[arena[k]]->destroyFollower(0); //destroy the follower
+						continue;
+					}
+					else{
+						lost_points+= p->army[arena[k]]->get_attack();
+						p->army.erase(arena[k]); //destroy the Personality
+						p->arena.erase(k);
+					}
+
+					if(k == p->army.size()) break;
+					k++;
+				}
 			}
 		}
+		
+		//Surviving Personalities lose a point of honour
+		for(int i= 0; i< arena.size(); i++){
+			army[arena[i]]->decrement_honour();
+			if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
+				army[arena[i]]->performSeppuku();
+				army[arena[i]]->destroyFollower(); //Destroy the Follower
+			}
+		}
+		for(int i= 0; i< p->arena.size(); i++){
+			p->army[arena[i]]->decrement_honour();
+			if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
+				p->army[arena[i]]->performSeppuku();
+				p->army[arena[i]]->destroyFollower(); //Destroy the Follower
+			}
+		}
+
 	}
 }

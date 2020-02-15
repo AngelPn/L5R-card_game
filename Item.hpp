@@ -28,12 +28,16 @@ public:
 
 	int getType() const
 	{
-		return ITEM; 
+		return ITEM;
 	}
 
 	unsigned int get_durability() const
 	{
 		return durability;
+	}
+
+	void decrement_durability(){
+		durability--;
 	}
 
 	virtual void print() const{
@@ -108,4 +112,4 @@ public:
 	}
 };
 
-#endif 
+#endif
