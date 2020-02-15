@@ -15,8 +15,8 @@ private:
 	unsigned int attack;
 	unsigned int defense;
 	unsigned int honour;
-	std::vector<Follower> followers;
-	std::vector<Item> items;
+	std::vector<Follower*> followers;
+	std::vector<Item*> items;
 	unsigned int greenCardBound;
 
 public: //int type-> Personalities type
