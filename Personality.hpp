@@ -17,6 +17,7 @@ private:
 	unsigned int honour;
 	std::vector<Follower> followers;
 	std::vector<Item> items;
+	unsigned int greenCardBound;
 
 public: //int type-> Personalities type
 	Personality(const std::string name, int type) : BlackCard(name, type), isDead(0)
@@ -25,11 +26,11 @@ public: //int type-> Personalities type
 	{
 		switch (type)
 		{
-			case ATTACKER   : cost= 5; attack = 3; defense = 2; honour = 2; break;
-			case DEFENDER   : cost= 5; attack = 2; defense = 3; honour = 2; break;
-			case SHOGUN     : cost= 15; attack = 10; defense = 5; honour = 8; break; 
-			case CHANCELLOR : cost= 15; attack = 5; defense = 10; honour = 8; break;
-			case CHAMPION   : cost= 30; attack = 20; defense = 20; honour = 12; break;
+			case ATTACKER   : cost= 5; attack = 3; defense = 2; honour = 2; greenCardBound = 3; break;
+			case DEFENDER   : cost= 5; attack = 2; defense = 3; honour = 2; greenCardBound = 3; break;
+			case SHOGUN     : cost= 15; attack = 10; defense = 5; honour = 8; greenCardBound = 4; break;
+			case CHANCELLOR : cost= 15; attack = 5; defense = 10; honour = 8; greenCardBound = 4; break;
+			case CHAMPION   : cost= 30; attack = 20; defense = 20; honour = 12; greenCardBound = 5; break;
 		}
 	}
 
@@ -41,10 +42,10 @@ public: //int type-> Personalities type
 	//}
 
 	//accessors that will probably be needed , NOTE: Will probably be changed or enhanced later
-    
+
     int getType() const
 	{
-		return PERSONALITY; 
+		return PERSONALITY;
 	}
 	//Accessors
 	bool is_dead() const { return isDead; }
@@ -52,15 +53,31 @@ public: //int type-> Personalities type
 	unsigned int get_defense() const { return defense; }
 	unsigned int get_honour() const { return honour; }
 
+	bool belowBound() const  //returns true if green card bound is not exceeded for this personality, otherwise returns false
+	{
+		if (greenCardBound > followers.size() + items.size())  //folowers size + items size is total green cards possessed
+			return true;
+		else
+			return false;
+	}
+
 	virtual void print() const{
 		std::cout<< "Cost: "<< cost<< "\nAttack: "<< attack<< "\nDefense: "<< defense<< "\nHonour: "<< honour<< "\n";
 		BlackCard::print();
 	}
+
+	void applyBonus(GreenCard *card)
+	{
+		this->attack += card->get_attackBonus();
+		this->defense += card->get_defenseBonus();
+	}
+
+	void equip(GreenCard *card);
 };
 
 class Attacker : public Personality {
 
-public: 
+public:
 	Attacker(const std::string name, int type) : Personality(name, type){}
 
 	//Attacker(const Attacker &a): Personality(a){ }
@@ -123,4 +140,4 @@ public:
 	}
 };
 
-#endif 
+#endif
