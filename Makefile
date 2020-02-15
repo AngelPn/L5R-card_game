@@ -1,4 +1,4 @@
-OBJS= main.o DeckBuilder.o Player.o GameBoard.o
+OBJS= main.o DeckBuilder.o Personality.o Player.o GameBoard.o
 CFLAGS = -g -Wall -I.
 PROGRAM= ex
 
