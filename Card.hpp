@@ -30,9 +30,10 @@ public:
 
     //getType is a function that needs to exist in all sub-classes of Card but with different implementation
     //in each subclass, also no objects of Card need to be created so we make it abstract (pure virtual)
-	virtual int getType() const = 0; 
-    virtual void print() const = 0; //for the same reasons , the print card function is pure virtual
-    void untap() { isTapped = 0; }  //untaps card 
+	virtual int getType() const = 0;
+  virtual void print() const = 0; //for the same reasons , the print card function is pure virtual
+  void untap() { isTapped = 0; }  //untaps card
+	unsigned int get_cost() const { return this->cost; }
 };
 
 namespace {int no_cardTextes= 12;} //Set the number of card textes that file "CardTextes.txt" has
@@ -76,6 +77,16 @@ public:
 	virtual void print() const{
 		std::cout<< "Card Text: "<< cardText<< std::endl<< "Name: "<< Card::get_name()<< std::endl << std::endl;
 	}
+
+	unsigned int get_honour() const { return this->minimumHonor; }
+	unsigned int get_effectCost() const {return this->effectCost; }
+	unsigned int get_attackBonus() const {return this->attackBonus; }
+	unsigned int get_defenseBonus() const {return this->defenseBonus; }
+
+	void applyBonus(){
+		attackBonus += effectBonus;
+		defenseBonus += effectBonus;
+	}
 };
 
 class BlackCard: public Card{
@@ -90,7 +101,7 @@ public:
 	virtual void print() const{
 		std::cout<< "Name: "<< Card::get_name()<< std::endl << std::endl;
 	}
-	void reveal() { isRevealed = 1; } 
+	void reveal() { isRevealed = 1; }
 };
 
 #endif
