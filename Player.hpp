@@ -20,23 +20,32 @@ private:
 	vector<Holding*> holdings;
 	vector<Personality*> army;
 	vector<int> arena; //vector arena keeps track of army's indexes that are set for battle
-	int numberOfProvinces= NO_PROVINCES;
+	int numberOfProvinces;
 	vector<BlackCard*> provinces;
+	unsigned int money;  //amount of money the player currently has
 
 public:
-	Player();
-	~Player();
+	std::string name;
+	Player(const std::string &name);
+   ~Player();
 
-	int give_no_provinces();
+   void printGameStatistics();
+   int give_no_provinces();
 
+	//Starting Phase functions
 	void startingPhase();
-	void battlePhase(Player *p);
 	void untapEverything();
 	void drawFateCard();
 	void revealProvinces();
-	void printGameStatistics();
 	void printHand() const;
 	void printProvinces() const;
+
+	//Equip Phase functions
+	void equipPhase();
+	void printArmy() const;
+
+	//Battle Phase functions
+	void battlePhase(Player *p);
 
 };
 
