@@ -42,10 +42,22 @@ public:
 
 	//Equip Phase functions
 	void equipPhase();
+	void tapHoldings();
 	void printArmy() const;
 
 	//Battle Phase functions
 	void battlePhase(Player *p);
+
+	//Economy Phase functions
+	void economyPhase();
+	void printHoldings() const;
+	void checkChains(Holding* holding);
+	void equipProvince(BlackCard* card);
+
+	//Ending Phase functions
+	void endingPhase();
+	void discardSurplusFateCards();
+	//void printArena() const;
 
 };
 

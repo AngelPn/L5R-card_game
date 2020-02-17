@@ -50,6 +50,7 @@ void Player::printGameStatistics(){
 
 void Player::startingPhase()
 {
+	cout << "Player: " << this->name << " is playing " << endl;
 	cout << "Starting Phase ..." << endl << endl;
 	this->untapEverything(); //untap all cards
 	this->drawFateCard(); //draw top card of fateDeck
@@ -87,6 +88,7 @@ void Player::drawFateCard()
 {
 	hand.push_back(fateDeck->front());  //push card from front of the fate deck to hand
 	fateDeck->pop_front(); //pop the first card of the fateDeck
+	cout << "Drew fate card " << endl << endl;
 }
 
 void Player::revealProvinces()
@@ -113,7 +115,8 @@ void Player::printProvinces() const
 	cout << "Printing provinces : " << endl << endl;
 	for (vector<BlackCard*>::const_iterator it = provinces.begin(); it != provinces.end(); ++it)
 	{
-		(*it)->print();
+		if ((*it)->is_revealed() == true)
+			(*it)->print();
 	}
 
 }
@@ -128,27 +131,33 @@ void Player::equipPhase()
 		cout << "No army found, phase is skipped :(" << endl << endl;
 		return;
 	}
-	else if (!money)
+	else if (!money && holdings.size() == 1)
 	{
-		cout << "No money available, phase is skipped :(" << endl << endl;
+		cout << "No money and holdings available (you're broke dude), phase is skipped :(" << endl << endl;
 		return;
 	}
 
 	else //proceed only if army and money are both available
 	{
+		cout << "Available money : " << money << endl << endl;
 		this->printHand();
 		this->printArmy();
 	}
 
-	char input = '0';
+	this->tapHoldings(); //tap any holdings in case you need money
+
+	char input;
 	unsigned int soldier = 0, card = 0;
 
 	while(money)  //while player has money and wants to
 	{
+		input = '0';
+		soldier=0;
+		card = 0;
 		cout << "Available money : " << money << endl << endl;
 		while (input != 'y' && input != 'n')
 		{
-			cout << "Do you want buy any cards from your hand (y:yes / n:no) ?" << endl;
+			cout << "Do you want to buy any cards from your hand (y:yes / n:no) ?" << endl;
 			cin >> input;
 		}
 
@@ -157,9 +166,9 @@ void Player::equipPhase()
 			cout << "Well, okay then, get ready for battle phase" << endl << endl;
 			return; //exit equip phase
 		}
-
 		while (soldier < 1 || soldier > army.size())
 		{
+			this->printArmy();
 			cout << "Choose a personality of your army to equip: (1-" << army.size() << ")" << endl;
 			cin >> soldier;
 		}
@@ -173,6 +182,7 @@ void Player::equipPhase()
 
 		while (card < 1 || card > hand.size())
 		{
+			this->printHand();
 			cout << "Choose a card in your hand to equip selected personality with : (1-" << hand.size() << ")" << endl;
 			cin >> card;
 		}
@@ -217,8 +227,127 @@ void Player::equipPhase()
 
 		//add attack/defense bonuses of card directly to soldier (this can be done either here or in battle phase)
 		army[soldier-1]->applyBonus(hand[card-1]);
-
 		hand.erase(hand.begin() + (card-1)); //erase card from hand
+
+	}
+}
+
+void Player::printArmy() const
+{
+	cout << "Printing army : " << endl << endl;
+	for (vector<Personality*>::const_iterator it = army.begin(); it != army.end(); ++it)
+	{
+		(*it)->print();
+	}
+}
+
+
+void Player::printHoldings() const
+{
+	cout << "Printing holdings : " << endl << endl;
+	for (vector<Holding*>::const_iterator it = holdings.begin(); it != holdings.end(); ++it)
+	{
+		(*it)->print();
+	}
+
+}
+
+void Player::economyPhase()
+{
+	char input;
+	unsigned int i;
+
+	cout << "Player: " << this->name << " is playing " << endl;
+	cout << "Economy Phase ..." << endl << endl;
+	this->revealProvinces(); //reveal not-destroyed provinces
+	cout << "Available money : " << money << endl << endl;
+	this->printProvinces(); //prints not-destroyed provinces
+	this->tapHoldings(); //tap any holdings in case you need extra money
+
+	while(money)  //while player has money and wants to
+	{
+		input = '0';
+		i = 0;
+		cout << "Available money : " << money << endl << endl;
+		while (input != 'y' && input != 'n')
+		{
+			cout << "Do you want buy from any provinces (y:yes / n:no) ?" << endl;
+			cin >> input;
+		}
+
+		if (input == 'n')
+			return; //exit economy phase
+
+		while (i < 1 || i > provinces.size())
+		{
+			this->printProvinces();
+			cout << "Choose a province to buy from : (1-" << provinces.size() << ")" << endl;
+			cin >> i;
+		}
+
+		if (provinces[i-1]->is_revealed() == false)
+		{
+			cout <<"This province is not revealed yet, purchase cancelled" << endl;
+			continue;
+		}
+
+		if (provinces[i-1]->get_cost() > money)
+		{
+			cout << "This province cannot be afforded, purchase cancelled" << endl;
+			continue;
+		}
+
+		//at this point purchase is made
+		money -= provinces[i-1]->get_cost();
+		cout << "Province purchase successful " << endl << endl;
+		this->equipProvince(provinces[i-1]); //add province to army or holdings vector and call checkChains for upper-sub holding connections
+		//provinces.erase(provinces.begin() + (i-1)); //remove card from provinces
+		provinces[i-1] = dynastyDeck->front(); //remove card from provinces and replace it with top of dynasty-deck (not revealed)
+	    dynastyDeck->pop_front();
+	}
+}
+
+
+void Player::tapHoldings()
+{
+	char input;
+	unsigned int i, count = 0;
+
+	while (holdings.size() -1 -count > 0) //while player possesses untapped holdings (other than stronghold)
+	{
+		input = '0';
+		i=0;
+		this->printHoldings(); //print players holdings so they can decide whether to tap a holding for extra money or not
+
+		while (input != 'y' && input != 'n')
+		{
+			cout << "Do you want to tap any of your holdings for extra money (y:yes / n:no) ?" << endl;
+			cin >> input;
+		}
+
+		if (input == 'y')
+		{
+			while ( i < 1 || i > (holdings.size()-1))
+			{
+				this->printHoldings();
+				cout << "Choose a holding to tap : (1-" << holdings.size() - 1 << ")" << endl;
+				cin >> i;
+			}
+
+			if (holdings[i]->is_tapped() == true)
+			{
+				cout << "Card already tapped can't be used for the remainder of the round " << endl;
+				continue;
+			}
+
+			holdings[i]->tap(); //card is tapped
+			money += holdings[i]->get_harvestValue();
+			count++;
+			cout << "Holding tapped and its harvest value was added to your money " << endl << endl;
+		}
+
+		else
+			return;
 
 	}
 }
@@ -354,7 +483,7 @@ void Player::battlePhase(Player *p){
 				}
 			}
 		}
-		
+
 		//Surviving Personalities lose a point of honour
 		for(int i= 0; i< arena.size(); i++){
 			army[arena[i]]->decrement_honour();
@@ -372,4 +501,237 @@ void Player::battlePhase(Player *p){
 		}
 
 	}
+}
+
+void Player::printHoldings() const
+{
+	cout << "Printing holdings : " << endl << endl;
+	for (vector<Holding*>::const_iterator it = holdings.begin(); it != holdings.end(); ++it)
+	{
+		(*it)->print();
+	}
+
+}
+
+void Player::economyPhase()
+{
+	char input;
+	unsigned int i;
+
+	cout << "Player: " << this->name << " is playing " << endl;
+	cout << "Economy Phase ..." << endl << endl;
+	this->revealProvinces(); //reveal not-destroyed provinces
+	cout << "Available money : " << money << endl << endl;
+	this->printProvinces(); //prints not-destroyed provinces
+	this->tapHoldings(); //tap any holdings in case you need extra money
+
+	while(money)  //while player has money and wants to
+	{
+		input = '0';
+		i = 0;
+		cout << "Available money : " << money << endl << endl;
+		while (input != 'y' && input != 'n')
+		{
+			cout << "Do you want buy from any provinces (y:yes / n:no) ?" << endl;
+			cin >> input;
+		}
+
+		if (input == 'n')
+			return; //exit economy phase
+
+		while (i < 1 || i > provinces.size())
+		{
+			this->printProvinces();
+			cout << "Choose a province to buy from : (1-" << provinces.size() << ")" << endl;
+			cin >> i;
+		}
+
+		if (provinces[i-1]->is_revealed() == false)
+		{
+			cout <<"This province is not revealed yet, purchase cancelled" << endl;
+			continue;
+		}
+
+		if (provinces[i-1]->get_cost() > money)
+		{
+			cout << "This province cannot be afforded, purchase cancelled" << endl;
+			continue;
+		}
+
+		//at this point purchase is made
+		money -= provinces[i-1]->get_cost();
+		cout << "Province purchase successful " << endl << endl;
+		this->equipProvince(provinces[i-1]); //add province to army or holdings vector and call checkChains for upper-sub holding connections
+		//provinces.erase(provinces.begin() + (i-1)); //remove card from provinces
+		provinces[i-1] = dynastyDeck->front(); //remove card from provinces and replace it with top of dynasty-deck (not revealed)
+	    dynastyDeck->pop_front();
+	}
+}
+
+
+void Player::tapHoldings()
+{
+	char input;
+	unsigned int i, count = 0;
+
+	while (holdings.size() -1 -count > 0) //while player possesses untapped holdings (other than stronghold)
+	{
+		input = '0';
+		i=0;
+		this->printHoldings(); //print players holdings so they can decide whether to tap a holding for extra money or not
+
+		while (input != 'y' && input != 'n')
+		{
+			cout << "Do you want to tap any of your holdings for extra money (y:yes / n:no) ?" << endl;
+			cin >> input;
+		}
+
+		if (input == 'y')
+		{
+			while ( i < 1 || i > (holdings.size()-1))
+			{
+				this->printHoldings();
+				cout << "Choose a holding to tap : (1-" << holdings.size() - 1 << ")" << endl;
+				cin >> i;
+			}
+
+			if (holdings[i]->is_tapped() == true)
+			{
+				cout << "Card already tapped can't be used for the remainder of the round " << endl;
+				continue;
+			}
+
+			holdings[i]->tap(); //card is tapped
+			money += holdings[i]->get_harvestValue();
+			count++;
+			cout << "Holding tapped and its harvest value was added to your money " << endl << endl;
+		}
+
+		else
+			return;
+
+	}
+
+}
+
+void Player::equipProvince(BlackCard* card)
+{
+	Personality *person = NULL;
+	Holding *hold = NULL;
+	TypeConverter t;
+	t.getCorrectType(card,&person,&hold);
+	if (person == NULL) //if given black card is holding
+	{
+		this->checkChains(hold); //check for upper-sub holding connections
+		holdings.push_back(hold); //push it to the vector of holdings of player
+	}
+	else
+		army.push_back(person); //else push it to the army of player
+}
+
+void Player::checkChains(Holding* holding)
+{
+	cout << "Checking for possible chains ... " << endl << endl;
+
+	Holding* upper = NULL;
+	Holding* sub = NULL;
+	if (holding->getHoldingType() == MINE) //if holding is mine you search for possible upper holding connections
+	{
+		for (unsigned int i = 1; i < holdings.size(); i++)  //you go through all players holdings other than stronghold obviously
+		{
+			if (holdings[i]->getHoldingType() == GOLD_MINE && upper == NULL && holdings[i]->hasSub() == false ) //chain goes mine --> gold mine
+				upper = holdings[i];
+			else if (holdings[i]->getHoldingType() == GOLD_MINE && upper != NULL &&
+					holdings[i]->hasSub() == false && rand()%2 == 1) //if another gold mine is found choose in random
+				upper = holdings[i];
+		}
+
+	}
+
+	else if (holding->getHoldingType() == CRYSTAL_MINE) //if holding is crystal mine you search for possible sub holding connections
+	{
+		for (unsigned int i = 1; i < holdings.size(); i++)
+		{
+			if (holdings[i]->getHoldingType() == GOLD_MINE && sub == NULL && holdings[i]->hasUpper() == false) //chain goes crystal mine <-- gold mine
+				sub = holdings[i];
+			else if (holdings[i]->getHoldingType() == GOLD_MINE && sub != NULL &&
+					holdings[i]->hasUpper() == false && rand()%2 == 1) //if another gold mine is found choose in random
+				sub = holdings[i];
+		}
+
+	}
+
+	else if (holding->getHoldingType() == GOLD_MINE) //if holding is gold mine you search for possible upper AND sub holding connections
+	{
+		for (unsigned int i = 1; i < holdings.size(); i++)
+		{
+			if (holdings[i]->getHoldingType() == MINE && sub == NULL && holdings[i]->hasUpper() == false) //chain goes gold mine <-- mine
+				sub = holdings[i];
+			else if (holdings[i]->getHoldingType() == MINE && sub != NULL &&
+					holdings[i]->hasUpper() == false && rand()%2 == 1) //if another mine is found choose in random
+				sub = holdings[i];
+
+			if (holdings[i]->getHoldingType() == CRYSTAL_MINE && upper == NULL && holdings[i]->hasSub() == false) //chaing goes mine --> gold mine --> crystal mine
+				upper = holdings[i];
+			else if (holdings[i]->getHoldingType() == CRYSTAL_MINE && upper != NULL &&
+					holdings[i]->hasSub() == false && rand()%2 == 1) //if another mine is found choose in random
+				upper = holdings[i];
+		}
+
+	}
+
+	if (upper != NULL) //if a possible upper holding connection is decided
+		holding->setUpperHolding(upper);  //make connection
+	if (sub != NULL) //if a possible sub holding connection is decided
+		holding->setSubHolding(sub); //make connection
+
+	if (upper != NULL || sub !=NULL) //if at least one connection was made
+	{
+		holding->equipBonus();  //update harvest value of holding with bonus
+		cout << "Connections made , bonuses equipped " << endl << endl;
+	}
+
+	else
+		cout << "No possible connections found :( " << endl << endl;
+ //obviously if given holding is not mine or gold mine or crystal mine nothing happens and we just move on with our day
+
+
+}
+
+void Player::endingPhase()
+{
+	cout << "Player: " << this->name << " is playing " << endl;
+	cout << "Ending Phase ..." << endl << endl;
+	this->discardSurplusFateCards();
+	this->printGameStatistics();
+	this->printHand();
+	this->printProvinces();
+	this->printHoldings();
+	//this->printArena();
+}
+
+void Player::discardSurplusFateCards()
+{
+	unsigned int card;
+
+	if (hand.size() > NO_HAND)
+	{
+		cout << "You have surplus fate cards in your hand (max " << NO_HAND << " and you have " << hand.size() << " )" << endl;
+		cout << "You need to discard " << hand.size() - NO_HAND << " cards from your hand ..." << endl;
+		for (unsigned int i = 0; i < hand.size() - NO_HAND; i++)
+		{
+			card = 0;
+			while (card < 1 || card > hand.size())
+			{
+				this->printHand();
+				cout << "Choose a card from your hand to discard : (1-" << hand.size() << ")" << endl;
+				cin >> card;
+			}
+
+			hand.erase(hand.begin() + (card-1)); //erase card from hand
+		}
+	}
+
+	cout << "Surplus fate cards discarded! " << endl << endl;
+
 }
