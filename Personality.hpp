@@ -74,24 +74,28 @@ public: //int type-> Personalities type
 		else return items;
 	}
 
-	void destroyFollower(int position){
-		followers.erase(position);
+	bool hasFollowers(){
+		if(followers->empty()) return true;
+		else return false;
 	}
 
-	void destroyItem(int position){
-		items.erase(position);
+	void destroyFollower(int *lost_points){
+		(*lost_points)+= followers->font()->get_attackBonus();
+		followers->pop_front();
 	}
 
 	void tap_followers(){
-		for(int i=0; i< followers.size(); i++)
-			followers[i].tap();
+		list<Follower *>::iterator it;
+		for (it = followers->begin(); it != followers->end(); it++)
+			(*it)->tap();
 	}
 
 	void decrement_durability(){
-		for(int i= 0; i< items.size(); i++){
-			items[i].decrement_durability();
-			if(items[i].get_durability() == 0)
-				destroyItem(i);
+		list<Item *>::iterator it;
+		for (it = items->begin(); it != items->end(); it++){
+			(*it)->decrement_durability();
+			if((*it)->get_durability() == 0)
+				items->erase(it);
 		}
 	}
 
@@ -100,12 +104,12 @@ public: //int type-> Personalities type
 	}
 
 	void performSeppuku(){
-		cout<< "I am going to perform Seppuku"<< endl;
+		std::cout<< "I am going to perform Seppuku"<< std::endl;
 	}
 
 	bool belowBound() const  //returns true if green card bound is not exceeded for this personality, otherwise returns false
 	{
-		if (greenCardBound > followers.size() + items.size())  //folowers size + items size is total green cards possessed
+		if (greenCardBound > followers->size() + items->size())  //folowers size + items size is total green cards possessed
 			return true;
 		else
 			return false;

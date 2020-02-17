@@ -26,7 +26,7 @@ public:
 	//Card(const Card& c): name(c.name), isTapped(c.isTapped), cost(c.cost){ } //Copy constructor
 
 	std::string get_name() const{ return name; }
-	bool isTapped() const{ return isTapped; }
+	bool is_tapped() const{ return isTapped; }
 	unsigned int get_cost() const { return this->cost; }
 
     //getType is a function that needs to exist in all sub-classes of Card but with different implementation

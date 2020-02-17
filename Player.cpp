@@ -365,26 +365,26 @@ void Player::battlePhase(Player *p){
 	//All of the cards in Army are untapped because of the startingPhase
 	cout<< "Choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
 		"The number of existing untapped Personalities in Army is "<< army.size()<< endl<<
-		"Type a number from 0 to "<< army.size()-1<< ": ";
+		"Type a number: (1-"<< army.size()<< "): ";
 	int c= getchar();
 	putchar(c);
 
 	//Built up the arena
 	cout<< "Choose which of the Personalities in Army you want in Arena: "<< endl<<
-		"Type "<< c<< " different numbers from 0 to "<< army.size()<< ": ";
+		"Type "<< c<< " different numbers: (1-"<< army.size()<< "): ";
 	//WE CAN SHOW HIM THE ARMY (printArmy)
 	for(int i=0; i< c; i++){
 		int ci= getchar();
 		putchar(ci);
 		cout<< ", ";
-		arena.push_back(ci); //vector of army's indexes that keeps track of personalities in arena
+		arena.push_back(ci-1); //vector of army's indexes that keeps track of personalities in arena
 	}
 
 	if(p!= NULL){ //If the player has chosen battle
 
-		cout<< "Choose the province of enemy to attack: "<< endl<<
+		cout<< "Choose the enemy's province to attack: "<< endl<<
 			"The number of enemy's provinces is "<< p->numberOfProvinces<< endl<<
-			"Type a number from 0 to "<< p->numberOfProvinces-1<< ": ";
+			"Type a number: (1-"<< p->numberOfProvinces<< "): ";
 		//WE CAN SHOW HIM THE ENEMY'S PROVINCES (printProvinces)
 		c= getchar();
 		putchar(c);
@@ -402,7 +402,7 @@ void Player::battlePhase(Player *p){
 		points_defender+= province_defense;
 
 		if(points_attacker - points_defender > province_defense){ //Attacker won the battle, province is destroyed
-			p->provinces.erase(c); //Destroy defender's province
+			p->provinces.erase(c-1); //Destroy defender's province
 			p->numberOfProvinces--; //Decrement defender's total number of provinces
 			//Defender loses all of the defensive personalities
 			for(int i=0; i< p->arena.size(); i++)
@@ -420,10 +420,8 @@ void Player::battlePhase(Player *p){
 				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
 
-					Follower *temp= army[arena[k]]->get_followers();
-					if(temp!= NULL){ //If the Personality has followers
-						lost_points+= temp->get_attackBonus();
-						army[arena[k]]->destroyFollower(0); //destroy the follower
+					if(hasFollowers()){ //If the Personality has followers
+						army[arena[k]]->destroyFollower(&lost_points);
 						continue;
 					}
 					else{
@@ -466,10 +464,8 @@ void Player::battlePhase(Player *p){
 				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
 
-					Follower *temp= p->army[arena[k]]->get_followers();
-					if(temp!= NULL){ //If the Personality has followers
-						lost_points+= temp->get_attackBonus();
-						p->army[arena[k]]->destroyFollower(0); //destroy the follower
+					if(p->hasFollowers()){ //If the Personality has followers
+						p->army[arena[k]]->destroyFollower(&lost_points);
 						continue;
 					}
 					else{
@@ -489,14 +485,14 @@ void Player::battlePhase(Player *p){
 			army[arena[i]]->decrement_honour();
 			if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				army[arena[i]]->performSeppuku();
-				army[arena[i]]->destroyFollower(); //Destroy the Follower
+				army.erase(arena[i]); //Destroy the Personality
 			}
 		}
 		for(int i= 0; i< p->arena.size(); i++){
 			p->army[arena[i]]->decrement_honour();
 			if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				p->army[arena[i]]->performSeppuku();
-				p->army[arena[i]]->destroyFollower(); //Destroy the Follower
+				p->army.erase(arena[i]); //Destroy the Personality
 			}
 		}
 
