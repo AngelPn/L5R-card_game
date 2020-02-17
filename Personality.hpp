@@ -3,7 +3,7 @@
 #define _PERSONALITY_HPP_
 #include "Card.hpp"
 #include <string>
-#include <vector>
+#include <list>
 
 #include "Follower.hpp"
 #include "Item.hpp"
@@ -15,8 +15,8 @@ private:
 	unsigned int attack;
 	unsigned int defense;
 	unsigned int honour;
-	std::vector<Follower*> followers;
-	std::vector<Item*> items;
+	std::list<Follower*> *followers;
+	std::list<Item*> *items;
 	unsigned int greenCardBound;
 
 public: //int type-> Personalities type
@@ -32,6 +32,17 @@ public: //int type-> Personalities type
 			case CHANCELLOR : cost= 15; attack = 5; defense = 10; honour = 8; greenCardBound = 4; break;
 			case CHAMPION   : cost= 30; attack = 20; defense = 20; honour = 12; greenCardBound = 5; break;
 		}
+
+		followers = new std::list<Follower*>();
+		items = new std::list<Item*>();
+	}
+
+	~Personality()
+	{
+		items->clear();
+		delete items;
+		followers->clear();
+		delete followers;
 	}
 
 	//Personality(const Personality &p): BlackCard(p), isDead(p.isDead), attack(p.attack), defense(p.defense), honour(p.honour){
@@ -53,14 +64,14 @@ public: //int type-> Personalities type
 	unsigned int get_defense() const { return defense; }
 	unsigned int get_honour() const { return honour; }
 	Follower *get_followers() const {
-		if(!followers.empty())
+		if(!followers->empty())
 			return NULL;
-		else return &followers;
+		else return followers;
 	}
 	Item *get_items() const {
-		if (!items.empty())
+		if (!items->empty())
 			return NULL;
-		else return &items;
+		else return items;
 	}
 
 	void destroyFollower(int position){
@@ -101,7 +112,8 @@ public: //int type-> Personalities type
 	}
 
 	virtual void print() const{
-		std::cout<< "Cost: "<< cost<< "\nAttack: "<< attack<< "\nDefense: "<< defense<< "\nHonour: "<< honour<< "\n";
+		std::cout<< "Cost: "<< cost<< "\nAttack: "<< attack<< "\nDefense: "<< defense<< "\nHonour: "<< honour<< "\nGreen cards attached : "
+		<< followers->size() + items->size() << "\nMax green cards :" << greenCardBound << std::endl;
 		BlackCard::print();
 	}
 

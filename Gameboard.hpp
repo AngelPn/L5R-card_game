@@ -13,7 +13,7 @@ public:
 
 	~GameBoard();
 
-	void initializeGameBoard(int no_players);
+	void initializeGameBoard(int no_players= 2);
 	void printGameStatistics();
 	int checkWinningCondition();
 	void gameplay();
