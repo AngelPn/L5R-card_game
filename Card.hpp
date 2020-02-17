@@ -15,10 +15,10 @@ enum Types{PERSONALITY = 1, HOLDING, FOLLOWER, ITEM};
 class Card{
 private:
 	std::string name;
-	bool isTapped; //untapped= 0, tapped=1
 
 protected:
 	unsigned int cost; //cost is protected in order to be initialized from sub-class constructor
+	bool isTapped; //untapped= 0, tapped=1
 
 public:
 	Card(std::string name_): name(name_), isTapped(0){ }
@@ -27,6 +27,7 @@ public:
 
 	std::string get_name() const{ return name; }
 	bool isTapped() const{ return isTapped; }
+	unsigned int get_cost() const { return this->cost; }
 
     //getType is a function that needs to exist in all sub-classes of Card but with different implementation
     //in each subclass, also no objects of Card need to be created so we make it abstract (pure virtual)
@@ -34,7 +35,7 @@ public:
   virtual void print() const = 0; //for the same reasons , the print card function is pure virtual
   void untap() { isTapped = 0; }  //untaps card
 	void tap() { isTapped = 1; } //taps card
-	unsigned int get_cost() const { return this->cost; }
+
 };
 
 namespace {int no_cardTextes= 12;} //Set the number of card textes that file "CardTextes.txt" has
@@ -96,13 +97,14 @@ private:
 
 public:
 	BlackCard(std::string name, int type): Card(name), isRevealed(0){}
-
+	virtual ~BlackCard(){}
 	//BlackCard(const BlackCard& bc): Card(bc), isRevealed(bc.isRevealed){ } //Copy constructor
 
+	bool is_revealed() const { return isRevealed; }
+	void reveal() { isRevealed = 1; }
 	virtual void print() const{
 		std::cout<< "Name: "<< Card::get_name()<< std::endl << std::endl;
 	}
-	void reveal() { isRevealed = 1; }
 };
 
 #endif
