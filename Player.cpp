@@ -241,126 +241,6 @@ void Player::printArmy() const
 	}
 }
 
-
-void Player::printHoldings() const
-{
-	cout << "Printing holdings : " << endl << endl;
-	for (vector<Holding*>::const_iterator it = holdings.begin(); it != holdings.end(); ++it)
-	{
-		(*it)->print();
-	}
-
-}
-
-void Player::economyPhase()
-{
-	char input;
-	unsigned int i;
-
-	cout << "Player: " << this->name << " is playing " << endl;
-	cout << "Economy Phase ..." << endl << endl;
-	this->revealProvinces(); //reveal not-destroyed provinces
-	cout << "Available money : " << money << endl << endl;
-	this->printProvinces(); //prints not-destroyed provinces
-	this->tapHoldings(); //tap any holdings in case you need extra money
-
-	while(money)  //while player has money and wants to
-	{
-		input = '0';
-		i = 0;
-		cout << "Available money : " << money << endl << endl;
-		while (input != 'y' && input != 'n')
-		{
-			cout << "Do you want buy from any provinces (y:yes / n:no) ?" << endl;
-			cin >> input;
-		}
-
-		if (input == 'n')
-			return; //exit economy phase
-
-		while (i < 1 || i > provinces.size())
-		{
-			this->printProvinces();
-			cout << "Choose a province to buy from : (1-" << provinces.size() << ")" << endl;
-			cin >> i;
-		}
-
-		if (provinces[i-1]->is_revealed() == false)
-		{
-			cout <<"This province is not revealed yet, purchase cancelled" << endl;
-			continue;
-		}
-
-		if (provinces[i-1]->get_cost() > money)
-		{
-			cout << "This province cannot be afforded, purchase cancelled" << endl;
-			continue;
-		}
-
-		//at this point purchase is made
-		money -= provinces[i-1]->get_cost();
-		cout << "Province purchase successful " << endl << endl;
-		this->equipProvince(provinces[i-1]); //add province to army or holdings vector and call checkChains for upper-sub holding connections
-		//provinces.erase(provinces.begin() + (i-1)); //remove card from provinces
-		provinces[i-1] = dynastyDeck->front(); //remove card from provinces and replace it with top of dynasty-deck (not revealed)
-	    dynastyDeck->pop_front();
-	}
-}
-
-
-void Player::tapHoldings()
-{
-	char input;
-	unsigned int i, count = 0;
-
-	while (holdings.size() -1 -count > 0) //while player possesses untapped holdings (other than stronghold)
-	{
-		input = '0';
-		i=0;
-		this->printHoldings(); //print players holdings so they can decide whether to tap a holding for extra money or not
-
-		while (input != 'y' && input != 'n')
-		{
-			cout << "Do you want to tap any of your holdings for extra money (y:yes / n:no) ?" << endl;
-			cin >> input;
-		}
-
-		if (input == 'y')
-		{
-			while ( i < 1 || i > (holdings.size()-1))
-			{
-				this->printHoldings();
-				cout << "Choose a holding to tap : (1-" << holdings.size() - 1 << ")" << endl;
-				cin >> i;
-			}
-
-			if (holdings[i]->is_tapped() == true)
-			{
-				cout << "Card already tapped can't be used for the remainder of the round " << endl;
-				continue;
-			}
-
-			holdings[i]->tap(); //card is tapped
-			money += holdings[i]->get_harvestValue();
-			count++;
-			cout << "Holding tapped and its harvest value was added to your money " << endl << endl;
-		}
-
-		else
-			return;
-
-	}
-}
-
-void Player::printArmy() const
-{
-	cout << "Printing army : " << endl << endl;
-	for (vector<Personality*>::const_iterator it = army.begin(); it != army.end(); ++it)
-	{
-		(*it)->print();
-	}
-}
-
 void Player::battlePhase(Player *p){
 	//All of the cards in Army are untapped because of the startingPhase
 	cout<< "Choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
@@ -393,41 +273,41 @@ void Player::battlePhase(Player *p){
 		int points_attacker= 0, points_defender= 0;
 
 		for(int i= 0; i< arena.size(); i++)
-			points_attacker+= army(arena[i])->get_defense();
+			points_attacker+= army[arena[i]]->get_defense();
 
 		for(int i= 0; i< p->arena.size(); i++)
-			points_defender+= p->army(arena[i])->get_defense();
+			points_defender+= p->army[arena[i]]->get_defense();
 
-		int province_defense= p->holdings[0].get_initialDefense(); //Get the province defense points from StrongHold
+		int province_defense= p->holdings[0]->get_initialDefense(); //Get the province defense points from StrongHold
 		points_defender+= province_defense;
 
 		if(points_attacker - points_defender > province_defense){ //Attacker won the battle, province is destroyed
-			p->provinces.erase(c-1); //Destroy defender's province
+			p->provinces.erase(provinces.begin()+ c-1); //Destroy defender's province
 			p->numberOfProvinces--; //Decrement defender's total number of provinces
 			//Defender loses all of the defensive personalities
 			for(int i=0; i< p->arena.size(); i++)
-				p->army.erase(arena[i]);
+				p->army.erase(p->army.begin()+ arena[i]);
 			p->arena.clear();
 		}
 		else{ //Province is not destroyed
 			if(points_attacker > points_defender){
 				//Defender loses all of the defensive personalities
 				for(int i=0; i< p->arena.size(); i++)
-					p->army.erase(arena[i]);
+					p->army.erase(p->army.begin()+ arena[i]);
 				p->arena.clear();
 
 				//Attacker loses followers or personalities from arena's army that attack>= points_attacker- points_defender
 				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
 
-					if(hasFollowers()){ //If the Personality has followers
+					if(army[arena[k]]->hasFollowers()){ //If the Personality has followers
 						army[arena[k]]->destroyFollower(&lost_points);
 						continue;
 					}
 					else{
 						lost_points+= army[arena[k]]->get_attack();
-						army.erase(arena[k]); //delete the Personality
-						arena.erase(k);
+						army.erase(army.begin()+ arena[k]); //delete the Personality
+						arena.erase(arena.begin()+ k);
 					}
 
 					if(k == army.size()) break;
@@ -446,32 +326,32 @@ void Player::battlePhase(Player *p){
 			else if(points_attacker == points_defender){
 				//Attacker loses all of the attacking personalities and followers
 				for(int i=0; i< arena.size(); i++)
-					army.erase(arena[i]);
+					army.erase(army.begin()+ arena[i]);
 				arena.clear();
 
 				//Defender loses all of the defensive personalities and followers
 				for(int i=0; i< p->arena.size(); i++)
-					p->army.erase(arena[i]);
+					p->army.erase(p->army.begin()+ arena[i]);
 				p->arena.clear();
 			}
 			else{
 				//Attacker loses all of the attacking personalities and followers
 				for(int i=0; i< arena.size(); i++)
-					army.erase(arena[i]);
+					army.erase(army.begin()+ arena[i]);
 				arena.clear();
 
 				//Defender loses followers or personalities from arena's army that attack>= points_attacker- points_defender
 				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
 
-					if(p->hasFollowers()){ //If the Personality has followers
+					if(p->army[arena[k]]->hasFollowers()){ //If the Personality has followers
 						p->army[arena[k]]->destroyFollower(&lost_points);
 						continue;
 					}
 					else{
 						lost_points+= p->army[arena[k]]->get_attack();
-						p->army.erase(arena[k]); //destroy the Personality
-						p->arena.erase(k);
+						p->army.erase(p->army.begin()+ arena[k]); //destroy the Personality
+						p->arena.erase(p->arena.begin()+ k);
 					}
 
 					if(k == p->army.size()) break;
@@ -485,14 +365,14 @@ void Player::battlePhase(Player *p){
 			army[arena[i]]->decrement_honour();
 			if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				army[arena[i]]->performSeppuku();
-				army.erase(arena[i]); //Destroy the Personality
+				army.erase(army.begin()+ arena[i]); //Destroy the Personality
 			}
 		}
 		for(int i= 0; i< p->arena.size(); i++){
 			p->army[arena[i]]->decrement_honour();
 			if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				p->army[arena[i]]->performSeppuku();
-				p->army.erase(arena[i]); //Destroy the Personality
+				p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
 			}
 		}
 

@@ -52,6 +52,7 @@ public:
 	}
 
   virtual int getHoldingType() const {}
+  virtual unsigned int get_initialDefense() const {}
 
 	void setUpperHolding(Holding* holding) {upperHolding = holding;}
 	void setSubHolding(Holding* holding)  {subHolding = holding;}
@@ -183,7 +184,7 @@ private:
 public:
 	Stronghold() : Holding("Stronghold", STRONGHOLD), honour(5), money(10), initialDefense(5){}
 
-	unsigned int get_initialDefense(){ return initialDefense; }
+	unsigned int get_initialDefense() const { return initialDefense; }
   unsigned int initialMoney() const { return this->money; }
   int getHoldingType() const { return STRONGHOLD; }
 

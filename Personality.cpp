@@ -9,7 +9,7 @@ void Personality::equip(GreenCard *card)
 	TypeConverter t;
 	t.getCorrectType(card,&follow,&item);
 	if (follow == NULL) //if given green card is item
-		items.push_back(item); //push it to the vector of items of personality
+		items->push_back(item); //push it to the vector of items of personality
 	else
-		followers.push_back(follow); //else push it to the vector of followers of personality
+		followers->push_back(follow); //else push it to the vector of followers of personality
 }

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "cstdio"
-#include "Gameboard.hpp"
+#include "GameBoard.hpp"
 
 int main(void){
 	GameBoard Legend_of_5_Rings;

@@ -63,16 +63,6 @@ public: //int type-> Personalities type
 	unsigned int get_attack() const { return attack; }
 	unsigned int get_defense() const { return defense; }
 	unsigned int get_honour() const { return honour; }
-	Follower *get_followers() const {
-		if(!followers->empty())
-			return NULL;
-		else return followers;
-	}
-	Item *get_items() const {
-		if (!items->empty())
-			return NULL;
-		else return items;
-	}
 
 	bool hasFollowers(){
 		if(followers->empty()) return true;
@@ -80,18 +70,18 @@ public: //int type-> Personalities type
 	}
 
 	void destroyFollower(int *lost_points){
-		(*lost_points)+= followers->font()->get_attackBonus();
+		(*lost_points)+= followers->front()->get_attackBonus();
 		followers->pop_front();
 	}
 
 	void tap_followers(){
-		list<Follower *>::iterator it;
+		std::list<Follower *>::iterator it;
 		for (it = followers->begin(); it != followers->end(); it++)
 			(*it)->tap();
 	}
 
 	void decrement_durability(){
-		list<Item *>::iterator it;
+		std::list<Item *>::iterator it;
 		for (it = items->begin(); it != items->end(); it++){
 			(*it)->decrement_durability();
 			if((*it)->get_durability() == 0)

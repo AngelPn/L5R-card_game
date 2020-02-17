@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "DeckBuilder.hpp"
+#include "TypeConverter.hpp"
 
 #define NO_HAND 6
 #define NO_PROVINCES 4
