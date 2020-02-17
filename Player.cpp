@@ -157,7 +157,7 @@ void Player::equipPhase()
 		cout << "Available money : " << money << endl << endl;
 		while (input != 'y' && input != 'n')
 		{
-			cout << "Do you want to buy any cards from your hand (y:yes / n:no) ?" << endl;
+			cout << this->name<< ", do you want to buy any cards from your hand (y:yes / n:no) ?" << endl;
 			cin >> input;
 		}
 
@@ -169,7 +169,7 @@ void Player::equipPhase()
 		while (soldier < 1 || soldier > army.size())
 		{
 			this->printArmy();
-			cout << "Choose a personality of your army to equip: (1-" << army.size() << ")" << endl;
+			cout << this->name<< ", choose a personality of your army to equip: (1-" << army.size() << ")" << endl;
 			cin >> soldier;
 		}
 
@@ -183,7 +183,7 @@ void Player::equipPhase()
 		while (card < 1 || card > hand.size())
 		{
 			this->printHand();
-			cout << "Choose a card in your hand to equip selected personality with : (1-" << hand.size() << ")" << endl;
+			cout << this->name<< ", choose a card in your hand to equip selected personality with : (1-" << hand.size() << ")" << endl;
 			cin >> card;
 		}
 
@@ -212,7 +212,7 @@ void Player::equipPhase()
 			input = '0';
 			while (input != 'y' && input != 'n')
 			{
-				cout << "Do you want buy the effect bonus of the card (y:yes / n:no) ?" << endl;
+				cout << this->name<< ", do you want buy the effect bonus of the card (y:yes / n:no) ?" << endl;
 				cin >> input;
 			}
 
@@ -241,33 +241,40 @@ void Player::printArmy() const
 	}
 }
 
+bool Player::hasArmy(){
+	if(!army.size()) return false;
+	else return true;
+}
+
 void Player::battlePhase(Player *p){
 	//All of the cards in Army are untapped because of the startingPhase
-	cout<< "Choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
+	cout<< this->name<< ", choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
 		"The number of existing untapped Personalities in Army is "<< army.size()<< endl<<
-		"Type a number: (1-"<< army.size()<< "): ";
-	int c= getchar();
-	putchar(c);
+		"Type a number (1-"<< army.size()<< "): ";
+	int c;
+	while(c< 1 || c> army.size()){
+		cin>> c;
+		cout<< c<< endl;
+	}
 
 	//Built up the arena
-	cout<< "Choose which of the Personalities in Army you want in Arena: "<< endl<<
+	printArmy();
+	cout<< this->name<< ", choose which of the Personalities in Army you want in Arena: "<< endl<<
 		"Type "<< c<< " different numbers: (1-"<< army.size()<< "): ";
-	//WE CAN SHOW HIM THE ARMY (printArmy)
+	int n;
 	for(int i=0; i< c; i++){
-		int ci= getchar();
-		putchar(ci);
-		cout<< ", ";
-		arena.push_back(ci-1); //vector of army's indexes that keeps track of personalities in arena
+		cin>> n;
+		arena.push_back(n -1); //vector of army's indexes that keeps track of personalities in arena
 	}
 
 	if(p!= NULL){ //If the player has chosen battle
 
-		cout<< "Choose the enemy's province to attack: "<< endl<<
+		cout<< "Enemy's provinces: "<< endl;
+		p->printProvinces();
+		cout<< this->name<< ", choose the enemy's province to attack: "<< endl<<
 			"The number of enemy's provinces is "<< p->numberOfProvinces<< endl<<
 			"Type a number: (1-"<< p->numberOfProvinces<< "): ";
-		//WE CAN SHOW HIM THE ENEMY'S PROVINCES (printProvinces)
-		c= getchar();
-		putchar(c);
+		cin>> n;
 
 		//Calculate the total points of attacker and defender
 		int points_attacker= 0, points_defender= 0;
@@ -288,6 +295,8 @@ void Player::battlePhase(Player *p){
 			for(int i=0; i< p->arena.size(); i++)
 				p->army.erase(p->army.begin()+ arena[i]);
 			p->arena.clear();
+
+			cout<< "Attacker "<< this->name<< " won the battle. Enemy's province is destroyed!"<< endl;
 		}
 		else{ //Province is not destroyed
 			if(points_attacker > points_defender){
@@ -408,7 +417,7 @@ void Player::economyPhase()
 		cout << "Available money : " << money << endl << endl;
 		while (input != 'y' && input != 'n')
 		{
-			cout << "Do you want buy from any provinces (y:yes / n:no) ?" << endl;
+			cout << this->name<< ", do you want buy from any provinces (y:yes / n:no) ?" << endl;
 			cin >> input;
 		}
 
@@ -418,7 +427,7 @@ void Player::economyPhase()
 		while (i < 1 || i > provinces.size())
 		{
 			this->printProvinces();
-			cout << "Choose a province to buy from : (1-" << provinces.size() << ")" << endl;
+			cout << this->name<< ", choose a province to buy from : (1-" << provinces.size() << ")" << endl;
 			cin >> i;
 		}
 
@@ -458,7 +467,7 @@ void Player::tapHoldings()
 
 		while (input != 'y' && input != 'n')
 		{
-			cout << "Do you want to tap any of your holdings for extra money (y:yes / n:no) ?" << endl;
+			cout << this->name<< ", do you want to tap any of your holdings for extra money (y:yes / n:no) ?" << endl;
 			cin >> input;
 		}
 

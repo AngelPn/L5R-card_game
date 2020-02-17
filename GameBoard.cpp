@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdio>
 
 #include "GameBoard.hpp"
 
@@ -44,61 +43,13 @@ int GameBoard::checkWinningCondition(){
 
 void GameBoard::gameplay(){
 	int winner= -1;
-	int i =3;
-	while(i--){ //Rounds until winner is found
-		std::cout<< "STARTING PHASE"<< std::endl;
-		for(int i=0; i< players.size(); i++){
-			if(players[i]->give_no_provinces()== 0)
-				continue;
-			players[i]->startingPhase();
-		}
 
-		std::cout<< "EQUIPMENT PHASE"<< std::endl;
-		for(int i=0; i< players.size(); i++){
-			if(players[i]->give_no_provinces()== 0)
-				continue;
-			players[i]->equipPhase();
-		}
-/*
-		std::cout<< "BATTLE PHASE"<< std::endl;
-		for(int i=0; i< players.size(); i++){
-			if(players[i]->give_no_provinces()== 0)
-				continue;
-			players[i]->battlePhase();
-		}
-*/
-		std::cout<< "ECONOMY PHASE"<< std::endl;
-		for(int i=0; i< players.size(); i++){
-			if(players[i]->give_no_provinces()== 0)
-				continue;
-			players[i]->economyPhase();
-		}
-
-		std::cout<< "FINAL PHASE"<< std::endl;
-		for(int i=0; i< players.size(); i++){
-			if(players[i]->give_no_provinces()== 0)
-				continue;
-			players[i]->endingPhase();
-		}
-		/*
-		winner= checkWinningCondition();
-		if(winner>= 0){
-			cout<< "PLAYER "<< players[winner]->name << " IS THE WINNER!"<< endl;
-			break;
-		}*/
-	}
-}
-
-/*void GameBoard::gameplay(){
-	int winner= -1;
-
-	while(1){ //Rounds until winner is found
+	while(1){ //Rounds until winner is foun
 		cout<< "STARTING PHASE"<< endl;
 
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
-			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
 			players[i]->startingPhase();
 		}
 
@@ -106,7 +57,6 @@ void GameBoard::gameplay(){
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
-			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
 			players[i]->equipPhase();
 		}
 
@@ -115,36 +65,39 @@ void GameBoard::gameplay(){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
 
-			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
-				cout<< "Defense or Battle? [Type D/B]: ";
-			int c= getchar();
-			while(c!= 'D' || c!= "B"){
-				cout<< "\nWrong character! Please type D or B: ";
-				c= getchar();
-			}
-			putchar(c);
+				cout << "Player: " << players[i]->name << " is playing " << endl;
+				cout << "Battle Phase ..." << endl << endl;
+				if (!players[i]->hasArmy()){
+					cout << "No army found, phase is skipped :(" << endl << endl;
+					break;
+				}
+
+			char c;
+			cout<< "Defense or Battle? [Type D/B]: ";
+			cin>> c;
+
 			if(c== 'D')
 				players[i]->battlePhase(NULL);
 			else{
-				cout<< "\nWhich Player do you want to battle?"<< endl<<
-					"Number of Players in the game: "<< players.size()<< endl<<
-					"Type a number: (1- "<< players.size()<< "): ";
-					c= getchar();
-				while(c>= players.size() && c<= 1){
-					cout<< "\nWrong number! Please type a number from 0 to "<< players.size()-1<< ":";
-					c= getchar();
+				cout<< "\nWhich Player do you want to battle?"<< endl<< "Suggested list:"<< endl;
+				for(int j=0; j< players.size(); j++){
+					if(i!= j)
+						cout<< j+1<< ") "<< players[j]->name<< endl;
 				}
-				putchar(c);
-				players[i]->battlePhase(&players[c-1]);
+				cout<< "Type a number from suggested list: ";
+				int n;
+				while(n< 1 || n> players.size()){
+					cin>> n;
+					cout<< endl;
+				}
+				players[i]->battlePhase(players[n-1]);
 			}
-
 		}
 
 		cout<< "ECONOMY PHASE"<< endl;
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
-			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
 			players[i]->economyPhase();
 		}
 
@@ -152,8 +105,7 @@ void GameBoard::gameplay(){
 		for(int i=0; i< players.size(); i++){
 				if(players[i]->give_no_provinces()== 0)
 				continue;
-			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
-			players[i]->finalPhase();
+			players[i]->endingPhase();
 		}
 			winner= checkWinningCondition();
 			if(winner> 0){
@@ -161,4 +113,4 @@ void GameBoard::gameplay(){
 			break;
 		}
 	}
-} */
+}

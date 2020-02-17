@@ -48,6 +48,7 @@ public:
 
 	//Battle Phase functions
 	void battlePhase(Player *p);
+	bool hasArmy();
 
 	//Economy Phase functions
 	void economyPhase();
