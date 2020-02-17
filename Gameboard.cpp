@@ -44,6 +44,53 @@ int GameBoard::checkWinningCondition(){
 
 void GameBoard::gameplay(){
 	int winner= -1;
+	int i =3;
+	while(i--){ //Rounds until winner is found
+		std::cout<< "STARTING PHASE"<< std::endl;
+		for(int i=0; i< players.size(); i++){
+			if(players[i]->give_no_provinces()== 0)
+				continue;
+			players[i]->startingPhase();
+		}
+
+		std::cout<< "EQUIPMENT PHASE"<< std::endl;
+		for(int i=0; i< players.size(); i++){
+			if(players[i]->give_no_provinces()== 0)
+				continue;
+			players[i]->equipPhase();
+		}
+/*
+		std::cout<< "BATTLE PHASE"<< std::endl;
+		for(int i=0; i< players.size(); i++){
+			if(players[i]->give_no_provinces()== 0)
+				continue;
+			players[i]->battlePhase();
+		}
+*/
+		std::cout<< "ECONOMY PHASE"<< std::endl;
+		for(int i=0; i< players.size(); i++){
+			if(players[i]->give_no_provinces()== 0)
+				continue;
+			players[i]->economyPhase();
+		}
+
+		std::cout<< "FINAL PHASE"<< std::endl;
+		for(int i=0; i< players.size(); i++){
+			if(players[i]->give_no_provinces()== 0)
+				continue;
+			players[i]->endingPhase();
+		}
+		/*
+		winner= checkWinningCondition();
+		if(winner>= 0){
+			cout<< "PLAYER "<< players[winner]->name << " IS THE WINNER!"<< endl;
+			break;
+		}*/
+	}
+}
+
+/*void GameBoard::gameplay(){
+	int winner= -1;
 
 	while(1){ //Rounds until winner is found
 		cout<< "STARTING PHASE"<< endl;
@@ -114,4 +161,4 @@ void GameBoard::gameplay(){
 			break;
 		}
 	}
-}
+} */
