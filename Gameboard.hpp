@@ -3,6 +3,8 @@
 
 #include "Player.hpp"
 
+using namespace std;
+
 class GameBoard{
 private:
 	vector<Player*> players;

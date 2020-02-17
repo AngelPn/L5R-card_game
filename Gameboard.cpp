@@ -67,6 +67,7 @@ void GameBoard::gameplay(){
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
+
 			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
 				cout<< "Defense or Battle? [Type D/B]: ";
 			int c= getchar();
@@ -75,19 +76,19 @@ void GameBoard::gameplay(){
 				c= getchar();
 			}
 			putchar(c);
-				if(c== 'D')
+			if(c== 'D')
 				players[i]->battlePhase(NULL);
 			else{
 				cout<< "\nWhich Player do you want to battle?"<< endl<<
 					"Number of Players in the game: "<< players.size()<< endl<<
-					"Type a number from 0 to "<< players.size()-1<< ": ";
+					"Type a number: (1- "<< players.size()<< "): ";
 					c= getchar();
-				while(c>= players.size()-1 && c<= 0){
+				while(c>= players.size() && c<= 1){
 					cout<< "\nWrong number! Please type a number from 0 to "<< players.size()-1<< ":";
 					c= getchar();
 				}
 				putchar(c);
-				players[i]->battlePhase(&players[c]);
+				players[i]->battlePhase(&players[c-1]);
 			}
 
 		}
@@ -99,7 +100,8 @@ void GameBoard::gameplay(){
 			cout<< "PLAYER'S #"<< i<< " TURN"<< endl;
 			players[i]->economyPhase();
 		}
-			cout<< "FINAL PHASE"<< endl;
+
+		cout<< "FINAL PHASE"<< endl;
 		for(int i=0; i< players.size(); i++){
 				if(players[i]->give_no_provinces()== 0)
 				continue;
@@ -108,7 +110,7 @@ void GameBoard::gameplay(){
 		}
 			winner= checkWinningCondition();
 			if(winner> 0){
-		cout<< "PLAYER #"<< winner<< " IS THE WINNER!"<< endl;
+		cout<< "PLAYER "<< players[winner]->name<< " IS THE WINNER!"<< endl;
 			break;
 		}
 	}
