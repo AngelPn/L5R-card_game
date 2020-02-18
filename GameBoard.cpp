@@ -45,7 +45,7 @@ void GameBoard::gameplay(){
 	int winner= -1;
 
 	while(1){ //Rounds until winner is foun
-		cout<< "STARTING PHASE"<< endl;
+		cout<< "\033[1;35mSTARTING PHASE\033[0m"<< endl;
 
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
@@ -53,14 +53,14 @@ void GameBoard::gameplay(){
 			players[i]->startingPhase();
 		}
 
-		cout<< "EQUIPMENT PHASE"<< endl;
+		cout<< "\033[1;35mEQUIPMENT PHASE\033[0m"<< endl;
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
 			players[i]->equipPhase();
 		}
 
-		cout<< "BATTLE PHASE"<< endl;
+		cout<< "\033[1;35mBATTLE PHASE\033[0m"<< endl;
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
@@ -69,7 +69,7 @@ void GameBoard::gameplay(){
 				cout << "Battle Phase ..." << endl << endl;
 				if (!players[i]->hasArmy()){
 					cout << "No army found, phase is skipped :(" << endl << endl;
-					break;
+					continue;
 				}
 
 			char c;
@@ -94,14 +94,14 @@ void GameBoard::gameplay(){
 			}
 		}
 
-		cout<< "ECONOMY PHASE"<< endl;
+		cout<< "\033[1;35mECONOMY PHASE\033[0m"<< endl;
 		for(int i=0; i< players.size(); i++){
 			if(players[i]->give_no_provinces()== 0)
 				continue;
 			players[i]->economyPhase();
 		}
 
-		cout<< "FINAL PHASE"<< endl;
+		cout<< "\033[1;35mFINAL PHASE\033[0m"<< endl;
 		for(int i=0; i< players.size(); i++){
 				if(players[i]->give_no_provinces()== 0)
 				continue;

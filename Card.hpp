@@ -72,7 +72,7 @@ public:
 	unsigned int get_defenseBonus() const {return this->defenseBonus; }
 
 	virtual void print() const{
-		std::cout<< "\033[1;32mCard Text: \033[0m"<< cardText<< std::endl<< "\033[1;31mName: \033[0m"<< Card::get_name()<< std::endl << std::endl;
+		std::cout<< "\033[1;32mCard Text: \033[0m"<< cardText<< std::endl<< "\033[1;32mName: \033[0m"<< Card::get_name()<< std::endl << std::endl;
 	}
 
 	void applyBonus(){
@@ -97,7 +97,7 @@ public:
 	virtual void print() const{
 		std::cout<< "\033[1;31mName: \033[0m"<< Card::get_name()<< std::endl << std::endl;
 	}
-	
+
 };
 
 #endif
