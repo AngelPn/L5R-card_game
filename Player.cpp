@@ -251,7 +251,7 @@ void Player::battlePhase(Player *p){
 	cout<< this->name<< ", choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
 		"The number of existing untapped Personalities in Army is "<< army.size()<< endl<<
 		"Type a number (1-"<< army.size()<< "): ";
-	int c;
+	int c= 0;
 	while(c< 1 || c> army.size()){
 		cin>> c;
 		cout<< c<< endl;
@@ -261,7 +261,8 @@ void Player::battlePhase(Player *p){
 	printArmy();
 	cout<< this->name<< ", choose which of the Personalities in Army you want in Arena: "<< endl<<
 		"Type "<< c<< " different numbers: (1-"<< army.size()<< "): ";
-	int n;
+	int n= 0;
+	arena.clear(); //Clear the previous arena
 	for(int i=0; i< c; i++){
 		cin>> n;
 		arena.push_back(n -1); //vector of army's indexes that keeps track of personalities in arena
@@ -281,7 +282,7 @@ void Player::battlePhase(Player *p){
 		int points_attacker= 0, points_defender= 0;
 
 		for(int i= 0; i< arena.size(); i++)
-			points_attacker+= army[arena[i]]->get_defense();
+			points_attacker+= army[arena[i]]->get_attack();
 
 		for(int i= 0; i< p->arena.size(); i++)
 			points_defender+= p->army[arena[i]]->get_defense();
@@ -405,12 +406,12 @@ void Player::battlePhase(Player *p){
 				p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
 			}
 		}
-
+		cout<< "Print "<< this->name<< "'s Arena:"<< endl;
+		printArena();
+		cout<< "Print "<< p->name<< "'s Arena: "<< endl;
+		p->printArena();
 	}
-	cout<< "Print "<< this->name<< "'s Arena:"<< endl;
-	printArena();
-	cout<< "Print "<< p->name<< "'s Arena: "<< endl;
-	p->printArena();
+
 }
 
 void Player::printHoldings() const
