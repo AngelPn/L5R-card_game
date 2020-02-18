@@ -24,25 +24,20 @@ public:
 		}
 	}
 
-	//Item(const Item &i): GreenCard(i), durability(i.durability){ } //Copy constructor: specify base initialization in the initialization list
-
 	int getType() const
 	{
 		return ITEM;
 	}
 
-	unsigned int get_durability() const
-	{
-		return durability;
-	}
+	unsigned int get_durability() const { return durability; }
 
-	void decrement_durability(){
-		durability--;
-	}
+	void decrement_durability(){ durability--; }
 
 	virtual void print() const{
-		std::cout<< "Cost: "<< cost<< "\nAttack Bonus: "<< attackBonus<< "\nDefense Bonus: "<< defenseBonus<< "\nMinimum Honor: "<< minimumHonor
-			<< "\nEffect Bonus: "<< effectBonus<< "\nEffect Cost: "<< effectCost<< "\nDurability: "<< durability<< "\n";
+		std::cout<< "\033[1;32mCost: \033[0m"<< cost<< "\033[1;32m\nAttack Bonus: \033[0m"<< attackBonus<<
+		 "\033[1;32m\nDefense Bonus: \033[0m"<< defenseBonus<< "\033[1;32m\nMinimum Honor: \033[0m"<< minimumHonor
+			<< "\033[1;32m\nEffect Bonus: \033[0m"<< effectBonus<< "\033[1;32m\nEffect Cost: \033[0m"<< effectCost<<
+			"\033[1;32m\nDurability: \033[0m"<< durability<< "\n";
 		GreenCard::print();
 	}
 };
@@ -52,10 +47,8 @@ class Katana : public Item {
 public:
 	Katana(const std::string name, int type) : Item(name, type){}
 
-	//Katana(const Katana &k): Item(k){ } //Copy constructor: specify base initialization in the initialization list
-
 	void print() const{
-		std::cout<< "Item: KATANA\n";
+		std::cout<< "\033[1;32mItem: KATANA\n\033[0m";
 		Item::print();
 	}
 };
@@ -65,10 +58,8 @@ class Spear : public Item {
 public:
 	Spear(const std::string name, int type) : Item(name, type){}
 
-	//Spear(const Spear &k): Item(k){ } //Copy constructor: specify base initialization in the initialization list
-
 	void print() const{
-		std::cout<< "Item: SPEAR\n";
+		std::cout<< "\033[1;32mItem: SPEAR\n\033[0m";
 		Item::print();
 	}
 };
@@ -78,10 +69,8 @@ class Bow : public Item {
 public:
 	Bow(const std::string name, int type) : Item(name, type){}
 
-	//Bow(const Bow &k): Item(k){ } //Copy constructor: specify base initialization in the initialization list
-
 	void print() const{
-		std::cout<< "Item: BOW\n";
+		std::cout<< "\033[1;32mItem: BOW\n\033[0m";
 		Item::print();
 	}
 };
@@ -91,10 +80,8 @@ class Ninjato : public Item {
 public:
 	Ninjato(const std::string name, int type) : Item(name, type){}
 
-	//Ninjato(const Ninjato &k): Item(k){ } //Copy constructor: specify base initialization in the initialization list
-
 	void print() const{
-		std::cout<< "Item: NINJATO\n";
+		std::cout<< "\033[1;32mItem: NINJATO\n\033[0m";
 		Item::print();
 	}
 };
@@ -104,10 +91,8 @@ class Wakizashi : public Item {
 public:
 	Wakizashi(const std::string name, int type) : Item(name, type){}
 
-	//Wakizashi(const Wakizashi &k): Item(k){ } //Copy constructor: specify base initialization in the initialization list
-
 	void print() const{
-		std::cout<< "Item: WAKIZASHI\n";
+		std::cout<< "\033[1;32mItem: WAKIZASHI\n\033[0m";
 		Item::print();
 	}
 };

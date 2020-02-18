@@ -23,8 +23,7 @@ protected:
 public:
 	Card(std::string name_): name(name_), isTapped(0){ }
 
-	//Card(const Card& c): name(c.name), isTapped(c.isTapped), cost(c.cost){ } //Copy constructor
-
+	//accessors
 	std::string get_name() const{ return name; }
 	bool is_tapped() const{ return isTapped; }
 	unsigned int get_cost() const { return this->cost; }
@@ -66,29 +65,21 @@ public:
   		file.close(); //Close the file
 	}
 
-	//GreenCard(const GreenCard &gc): Card(gc) //Copy constructor: specify base initialization in the initialization list
-	//{
-		//this->attackBonus= gc.attackBonus;
-		//this->defenseBonus= gc.defenseBonus;
-		//this->minimumHonor= gc.minimumHonor;
-		//this->effectBonus= gc.effectBonus;
-		//this->effectCost= gc.effectCost;
-		//this->cardText= gc.cardText;
-	//}
-
-	virtual void print() const{
-		std::cout<< "Card Text: "<< cardText<< std::endl<< "Name: "<< Card::get_name()<< std::endl << std::endl;
-	}
-
+	//accessors
 	unsigned int get_honour() const { return this->minimumHonor; }
 	unsigned int get_effectCost() const {return this->effectCost; }
 	unsigned int get_attackBonus() const {return this->attackBonus; }
 	unsigned int get_defenseBonus() const {return this->defenseBonus; }
 
+	virtual void print() const{
+		std::cout<< "\033[1;32mCard Text: \033[0m"<< cardText<< std::endl<< "\033[1;31mName: \033[0m"<< Card::get_name()<< std::endl << std::endl;
+	}
+
 	void applyBonus(){
 		attackBonus += effectBonus;
 		defenseBonus += effectBonus;
 	}
+
 };
 
 class BlackCard: public Card{
@@ -98,13 +89,15 @@ private:
 public:
 	BlackCard(std::string name, int type): Card(name), isRevealed(0){}
 	virtual ~BlackCard(){}
-	//BlackCard(const BlackCard& bc): Card(bc), isRevealed(bc.isRevealed){ } //Copy constructor
 
 	bool is_revealed() const { return isRevealed; }
+
 	void reveal() { isRevealed = 1; }
+
 	virtual void print() const{
-		std::cout<< "Name: "<< Card::get_name()<< std::endl << std::endl;
+		std::cout<< "\033[1;31mName: \033[0m"<< Card::get_name()<< std::endl << std::endl;
 	}
+	
 };
 
 #endif

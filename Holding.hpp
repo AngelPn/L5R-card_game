@@ -28,21 +28,7 @@ public:
 		}
 	}
 
-	//Holding(const Holding &h): BlackCard(h), harvestValue(h.harvestValue){
-	//	if(!h.upperHolding)
-	//		this->upperHolding= new Holding(*(h.upperHolding));
-	//	else this->upperHolding= NULL;
-	//	if(!h.subHolding)
-	//		this->subHolding= new Holding(*(h.subHolding));
-	//	else this->subHolding= NULL;
-	//}
-
-	//accessors that will probably be needed , NOTE: Will probably be changed or enhanced later
-
-	unsigned int get_harvestValue() const
-	{
-		return harvestValue;
-	}
+	unsigned int get_harvestValue() const{ return harvestValue; }
 
   virtual unsigned int initialMoney() const {}
 
@@ -77,7 +63,7 @@ public:
 	}
 
 	virtual void print() const{
-		std::cout<< "Cost: "<< cost<< "\nHarvest Value: "<< harvestValue<< "\n";
+		std::cout<< "\033[1;31mCost: \033[0m"<< cost<< "\033[1;31m\nHarvest Value: \033[0m"<< harvestValue<< "\n";
 		BlackCard::print();
 	}
 };
@@ -87,12 +73,10 @@ class Plain : public Holding {
 public:
 	Plain(const std::string name, int type) : Holding(name, type){}
 
-	//Plain(const Plain &p): Holding(p){ } //Copy constructor: specify base initialization in the initialization list
-
   int getHoldingType() const { return PLAIN;}
 
 	void print() const{
-		std::cout<< "Holding: PLAIN\n";
+		std::cout<< "\033[1;31mHolding: PLAIN\n\033[0m";
 		Holding::print();
 	}
 };
@@ -102,12 +86,10 @@ class Mine : public Holding {
 public:
 	Mine(const std::string name, int type) : Holding(name, type){}
 
-	//Mine(const Mine &p): Holding(p){ } //Copy constructor: specify base initialization in the initialization list
-
   int getHoldingType() const { return MINE;}
 
 	void print() const{
-		std::cout<< "Holding: MINE\n";
+		std::cout<< "\033[1;31mHolding: MINE\n\033[0m";
 		Holding::print();
 	}
 };
@@ -117,12 +99,10 @@ class GoldMine : public Holding {
 public:
 	GoldMine(const std::string name, int type) : Holding(name, type){}
 
-	//GoldMine(const GoldMine &p): Holding(p){ } //Copy constructor: specify base initialization in the initialization list
-
   int getHoldingType() const { return GOLD_MINE;}
 
 	void print() const{
-		std::cout<< "Holding: GOLD_MINE\n";
+		std::cout<< "\033[1;31mHolding: GOLD_MINE\n\033[0m";
 		Holding::print();
 	}
 };
@@ -132,12 +112,10 @@ class CrystalMine : public Holding {
 public:
 	CrystalMine(const std::string name, int type) : Holding(name, type){}
 
-	//CrystalMine(const CrystalMine &p): Holding(p){ } //Copy constructor: specify base initialization in the initialization list
-
   int getHoldingType() const { return CRYSTAL_MINE;}
 
 	void print() const{
-		std::cout<< "Holding: CRYSTAL_MINE\n";
+		std::cout<< "\033[1;31mHolding: CRYSTAL_MINE\n\033[0m";
 		Holding::print();
 	}
 };
@@ -147,12 +125,10 @@ class Farmland : public Holding {
 public:
 	Farmland(const std::string name, int type) : Holding(name, type){}
 
-	//Farmland(const Farmland &p): Holding(p){ } //Copy constructor: specify base initialization in the initialization list
-
   int getHoldingType() const { return FARMS;}
 
 	void print() const{
-		std::cout<< "Holding: FARMLAND\n";
+		std::cout<< "\033[1;31mHolding: FARMLAND\n\033[0m";
 		Holding::print();
 	}
 };
@@ -162,12 +138,10 @@ class GiftsandFavour : public Holding {
 public:
 	GiftsandFavour(const std::string name, int type) : Holding(name, type){}
 
-	//GiftsandFavour(const GiftsandFavour &p): Holding(p){ } //Copy constructor: specify base initialization in the initialization list
-
   int getHoldingType() const { return SOLO; }
 
 	void print() const{
-		std::cout<< "Holding: GIFTS and FAVOUR\n";
+		std::cout<< "\033[1;31mHolding: GIFTS and FAVOUR\n\033[0m";
 		Holding::print();
 	}
 };
@@ -189,7 +163,7 @@ public:
   int getHoldingType() const { return STRONGHOLD; }
 
 	void print() const{
-		std::cout<< "Holding: STRONGHOLD\n";
+		std::cout<< "\033[1;31mHolding: STRONGHOLD\n\033[0m";
 		Holding::print();
 	}
 };
