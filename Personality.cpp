@@ -76,7 +76,7 @@ bool Personality::belowBound() const  //returns true if green card bound is not 
 		return false;
 }
 
-virtual void Personality::print() const{
+void Personality::print() const{
 	std::cout<< "\033[1;31mCost: \033[0m"<< cost<< "\033[1;31m\nAttack: \033[0m"<< attack<< "\033[1;31m\nDefense: \033[0m"<< defense<<
 	"\033[1;31m\nHonour: \033[0m"<< honour<< "\033[1;31m\nGreen cards attached : \033[0m"
 	<< followers->size() + items->size() << "\033[1;31m\nMax green cards :\033[0m" << greenCardBound << std::endl;

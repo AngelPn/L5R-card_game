@@ -20,7 +20,7 @@ private:
 	unsigned int greenCardBound;
 
 public: //int type-> Personalities type
-	Personality(const std::string name, int type) : BlackCard(name, type), isDead(0);
+	Personality(const std::string name, int type);
 	~Personality();
 
   int getType() const;
