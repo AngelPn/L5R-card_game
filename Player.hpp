@@ -59,7 +59,7 @@ public:
 	//Ending Phase functions
 	void endingPhase();
 	void discardSurplusFateCards();
-	//void printArena() const;
+	void printArena() const;
 
 };
 

@@ -592,7 +592,7 @@ void Player::endingPhase()
 	this->printHand();
 	this->printProvinces();
 	this->printHoldings();
-	//this->printArena();
+	this->printArena();
 }
 
 void Player::discardSurplusFateCards()
@@ -619,4 +619,10 @@ void Player::discardSurplusFateCards()
 
 	cout << "Surplus fate cards discarded! " << endl << endl;
 
+}
+
+void Player::printArena() const{
+	cout<< "Printing Arena : "<< endl<< endl;
+	for(int i= 0; i< arena.size(); i++)
+		army[arena[i]]->print();
 }
