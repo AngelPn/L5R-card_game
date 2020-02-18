@@ -86,7 +86,7 @@ void GameBoard::gameplay(){
 				}
 				cout<< "Type a number from suggested list: ";
 				int n= 0;
-				while(n< 1 || n> players.size()){
+				while(n< 1 || n> players.size() || n== i){
 					cin>> n;
 					cout<< endl;
 				}
