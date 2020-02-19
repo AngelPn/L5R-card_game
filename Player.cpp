@@ -288,10 +288,10 @@ void Player::battlePhase(Player *p){
 
 		for(int i= 0; i< arena.size(); i++)
 			points_attacker+= army[arena[i]]->get_attack();
-	
+
 		for(int i= 0; i< p->arena.size(); i++)
 			points_defender+= p->army[arena[i]]->get_defense();
-			cout<< "HERE 2"<< endl;
+
 		int province_defense= p->holdings[0]->get_initialDefense(); //Get the province defense points from StrongHold
 		points_defender+= province_defense;
 	cout<< "Attacker's points= "<< points_attacker<< endl<<
