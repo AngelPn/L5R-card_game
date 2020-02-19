@@ -21,7 +21,7 @@ void GameBoard::initializeGameBoard(int no_players){
 void GameBoard::printGameStatistics(){
 	std::cout << "\nPrinting Statistics: " << std::endl << std::endl;
 	for(int i=0; i< players.size(); i++){
-		std::cout<< "PLAYER "<< players[i]->name << " is #"<< i<< std::endl;
+		std::cout<< "PLAYER "<< players[i]->name << " is #"<< i+1 << std::endl;
 		players[i]->printGameStatistics();
 		std::cout<< std::endl;
 	}
@@ -86,12 +86,17 @@ void GameBoard::gameplay(){
 				}
 				cout<< "Type a number from suggested list: ";
 				int n= 0;
-				while(n< 1 || n> players.size() || n== i){
+				while(n< 1 || n> players.size() || n-1== i){
 					cin>> n;
 					cout<< endl;
 				}
 				players[i]->battlePhase(players[n-1]);
 			}
+		}
+		winner= checkWinningCondition();
+		if(winner!= -1){
+			cout<< "PLAYER "<< players[winner]->name<< " IS THE WINNER!"<< endl;
+			break;
 		}
 
 		cout<< "\033[1;35mECONOMY PHASE\033[0m"<< endl;
@@ -107,10 +112,6 @@ void GameBoard::gameplay(){
 				continue;
 			players[i]->endingPhase();
 		}
-			winner= checkWinningCondition();
-			if(winner> 0){
-		cout<< "PLAYER "<< players[winner]->name<< " IS THE WINNER!"<< endl;
-			break;
-		}
+
 	}
 }

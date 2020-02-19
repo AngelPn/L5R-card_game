@@ -112,11 +112,14 @@ void Player::printHand() const
 
 void Player::printProvinces() const
 {
+	int flag= 1;
 	cout << "Printing provinces : " << endl << endl;
 	for (vector<BlackCard*>::const_iterator it = provinces.begin(); it != provinces.end(); ++it)
 	{
+		cout<< flag++ << ")"<< endl;
 		if ((*it)->is_revealed() == true)
 			(*it)->print();
+		else cout<< "Not revealed!"<< endl<< endl;
 	}
 
 }
@@ -276,22 +279,28 @@ void Player::battlePhase(Player *p){
 		cout<< this->name<< ", choose the enemy's province to attack: "<< endl<<
 			"The number of enemy's provinces is "<< p->numberOfProvinces<< endl<<
 			"Type a number: (1-"<< p->numberOfProvinces<< "): ";
-		cin>> n;
+		n= 0;
+		while(n< 1 || n> p->numberOfProvinces)
+			cin>> n;
 
 		//Calculate the total points of attacker and defender
 		int points_attacker= 0, points_defender= 0;
 
 		for(int i= 0; i< arena.size(); i++)
 			points_attacker+= army[arena[i]]->get_attack();
-
+			cout<< "HERE 1"<< endl;
 		for(int i= 0; i< p->arena.size(); i++)
 			points_defender+= p->army[arena[i]]->get_defense();
-
+			cout<< "HERE 2"<< endl;
 		int province_defense= p->holdings[0]->get_initialDefense(); //Get the province defense points from StrongHold
 		points_defender+= province_defense;
+	cout<< "Attacker's points= "<< points_attacker<< endl<<
+		"Province's defense= "<< province_defense<< endl<<
+		"Defender's points= "<< points_defender<< endl;
+	cout<< "HERE 3"<< endl;
 
 		if(points_attacker - points_defender > province_defense){ //Attacker won the battle, province is destroyed
-			p->provinces.erase(provinces.begin()+ c-1); //Destroy defender's province
+			p->provinces.erase(p->provinces.begin()+ n-1); //Destroy defender's province
 			p->numberOfProvinces--; //Decrement defender's total number of provinces
 			//Defender loses all of the defensive personalities
 			for(int i=0; i< p->arena.size(); i++)
@@ -343,15 +352,17 @@ void Player::battlePhase(Player *p){
 					"Attacker loses followers or personalities from Arena's army that attack>= points_attacker- points_defender"<< endl;
 			}
 			else if(points_attacker == points_defender){
+					cout<< "HERE 4"<< endl;
 				//Attacker loses all of the attacking personalities and followers
 				for(int i=0; i< arena.size(); i++)
 					army.erase(army.begin()+ arena[i]);
 				arena.clear();
-
+cout<< "HERE 5"<< endl;
 				//Defender loses all of the defensive personalities and followers
 				for(int i=0; i< p->arena.size(); i++)
 					p->army.erase(p->army.begin()+ arena[i]);
 				p->arena.clear();
+				cout<< "HERE 6"<< endl;
 				//Print a message
 				cout<< "Attacker's points - Defender's points < Province's defense"<< endl<<
 					"Province is not destroyed!"<< endl<<
@@ -364,7 +375,7 @@ void Player::battlePhase(Player *p){
 				for(int i=0; i< arena.size(); i++)
 					army.erase(army.begin()+ arena[i]);
 				arena.clear();
-
+cout<< "HERE 7"<< endl;
 				//Defender loses followers or personalities from arena's army that attack>= points_attacker- points_defender
 				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
@@ -397,6 +408,7 @@ void Player::battlePhase(Player *p){
 			if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				army[arena[i]]->performSeppuku();
 				army.erase(army.begin()+ arena[i]); //Destroy the Personality
+				arena.erase(arena.begin()+ i); //Erase the Personality from Arena
 			}
 		}
 		for(int i= 0; i< p->arena.size(); i++){
@@ -404,6 +416,7 @@ void Player::battlePhase(Player *p){
 			if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				p->army[arena[i]]->performSeppuku();
 				p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
+				p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
 			}
 		}
 		cout<< "Print "<< this->name<< "'s Arena:"<< endl;
@@ -475,7 +488,7 @@ void Player::economyPhase()
 		this->equipProvince(provinces[i-1]); //add province to army or holdings vector and call checkChains for upper-sub holding connections
 		//provinces.erase(provinces.begin() + (i-1)); //remove card from provinces
 		provinces[i-1] = dynastyDeck->front(); //remove card from provinces and replace it with top of dynasty-deck (not revealed)
-	    dynastyDeck->pop_front();
+	  dynastyDeck->pop_front();
 	}
 }
 
@@ -532,12 +545,13 @@ void Player::equipProvince(BlackCard* card)
 	TypeConverter t;
 	t.getCorrectType(card,&person,&hold);
 	if (person == NULL) //if given black card is holding
-	{
+	{ 
 		this->checkChains(hold); //check for upper-sub holding connections
 		holdings.push_back(hold); //push it to the vector of holdings of player
 	}
 	else
 		army.push_back(person); //else push it to the army of player
+
 }
 
 void Player::checkChains(Holding* holding)
