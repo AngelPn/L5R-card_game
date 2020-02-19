@@ -294,10 +294,10 @@ void Player::battlePhase(Player *p){
 
 		int province_defense= p->holdings[0]->get_initialDefense(); //Get the province defense points from StrongHold
 		points_defender+= province_defense;
-	cout<< "Attacker's points= "<< points_attacker<< endl<<
-		"Province's defense= "<< province_defense<< endl<<
-		"Defender's points= "<< points_defender<< endl;
-	cout<< "HERE 3"<< endl;
+
+		cout<< "Attacker's points= "<< points_attacker<< endl<<
+			"Province's defense= "<< province_defense<< endl<<
+			"Defender's points= "<< points_defender<< endl<< endl;
 
 		if(points_attacker - points_defender > province_defense){ //Attacker won the battle, province is destroyed
 			p->provinces.erase(p->provinces.begin()+ n-1); //Destroy defender's province
