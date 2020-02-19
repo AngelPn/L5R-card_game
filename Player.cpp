@@ -288,7 +288,7 @@ void Player::battlePhase(Player *p){
 
 		for(int i= 0; i< arena.size(); i++)
 			points_attacker+= army[arena[i]]->get_attack();
-			cout<< "HERE 1"<< endl;
+	
 		for(int i= 0; i< p->arena.size(); i++)
 			points_defender+= p->army[arena[i]]->get_defense();
 			cout<< "HERE 2"<< endl;
@@ -545,7 +545,7 @@ void Player::equipProvince(BlackCard* card)
 	TypeConverter t;
 	t.getCorrectType(card,&person,&hold);
 	if (person == NULL) //if given black card is holding
-	{ 
+	{
 		this->checkChains(hold); //check for upper-sub holding connections
 		holdings.push_back(hold); //push it to the vector of holdings of player
 	}
