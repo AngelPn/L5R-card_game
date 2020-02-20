@@ -341,7 +341,7 @@ void Player::battlePhase(Player *p){
 				for(int i= 0; i< arena.size(); i++){
 					army[arena[i]]->tap_followers();
 					army[arena[i]]->tap();
-					//Items of Personality loses one durability
+					//Items of Personality lose one durability
 					army[arena[i]]->decrement_durability();
 				}
 				//Print a message
@@ -349,7 +349,8 @@ void Player::battlePhase(Player *p){
 					"Province is not destroyed!"<< endl<<
 					"Attacker's points > Defender's points"<< endl<<
 					"Defender loses all of the defensive Personalities"<< endl<<
-					"Attacker loses followers or personalities from Arena's army that attack>= points_attacker- points_defender"<< endl;
+					"Attacker loses followers or personalities from Arena's army that attack>= points_attacker- points_defender"<< endl<<
+					"Tapped every Personality and Followers that have survived. Items of Personality lose one durability"; endl;
 			}
 			else if(points_attacker == points_defender){
 				//Attacker loses all of the attacking personalities and followers
