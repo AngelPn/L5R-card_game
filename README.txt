@@ -1,11 +1,65 @@
-1. Μετέφερα το σώμα του constructor/destructor της κλάσης Player στο Player.cpp
+﻿Βασιλάκης Βασίλης (sdi1800018) και Παναγοπούλου Αγγελική (sdi1800141) - Ομαδική Εργασία OOP
 
-2. Πρόσθεσα την συνάρτηση printGameStatistics στην κλάση Player. Σε ερώτηση του lists απάντησαν ότι μπορεί να εκτυπώνει ό,τι μας φαίνεται χρήσιμο και ενδεικτικά είπαν για κάτι ποσοστά. Ωστόσο, δεν μου ήταν κατανοητό γιατί μιλάει για ποσοστά που προκύπτουν σε κάθε φάση παιχνιδιού. Προς το παρόν, έχω βάλει να εκτυπώνεται ο αριθμός των ιδιοκτησιών, των επαρχιών και του army.
+Αρχεία
+    • Card.hpp
+        Κλάσεις Card, GreenCard, BlackCard
 
-3. Gameboard.hpp περιέχει την κλάση GameBoard. Περιέχει vector από δείκτη σε Player (players). Η αρχικοποίηση ζητάει να γίνεται στη λειτουργία initializeGameBoard (όπου ορίζεται ο αριθμός των παικτών... ο αριθμός των διάφορων κατηγοριών των καρτών δεν χρειάζεται να ορίζεται εδώ γιατί χρησιμοποιούμε το deckbuilder που μας δίνουν για βοηθητικό κώδικα, αυτό από lists) και μετά εκτυπώνεται η αρχική κατάσταση. Η συνάρτηση checkWinningCondition διαπερνά τον πίνακα από vectors και τσεκάρει αν υπάρχει μόνο ένας παίχτης που έχει επαρχίες ενώ όλοι οι άλλοι δεν έχουν, τον εντοπίζει και γυρνάει τον αριθμό του. Η συνάρτηση gameplay είναι σε σχόλια γιατί δεν έχουν οριστεί όλες οι φάσεις: γύροι επαναλαμβάνονται μέχρι να βρεθεί νικητής. Κάθε γύρος έχει 5 φάσεις. Κάθε φάση παίζεται από όλους τους παίκτες. Στα loops θα δεις ότι τσεκάρω αν έχει επαρχίες... Λογικάααα όποιος παίκτης δεν έχει επαρχίες, έχει χάσει άρα δεν μπορεί να παίξει (?) Δεν είμαι σίγουρη. Αν ισχύει αυτό, αντί να τσεκάρουμε αν έχει ερπαρχίες θα μπορούσαμε να έχουμε μια bool μεταβλητή που δείχνει αν έχει χάσει ή απλά να τον βγάζουμε από το vector απευθείας (οπότε και η checkWinningCondition να γίνει ακόμα πιο απλή).
+    • Follower.hpp
+        Κλάση Follower και τα είδη της: Footsoldier, Archer, Cavalry, Bushido, Sieger, Atakebune
 
-4. Η main έχει τροποποιηθεί κατάλληλα, το ίδιο και το Makefile. Τρέξτο να το δεις αν και δεν βγάζει κάτι εκπλητκικό.
+    • Item.hpp
+        Κλάση Item και τα είδη της: Katana, Spear, Bow, Ninjato, Wakizashi
 
-5. Διέγραψα τα αρχεία TypeConverter.
+    • Holding.hpp
+        Κλάση Holding και τα είδη της: Plain, Mine, GoldMine, CrystalMine, Farmland, GiftsandFavour, Stronghold
 
-6. Τελικά, οι αποφάσεις των παικτών θα γίνονται χειρωνακτικά ή αυτόματα; Πιστεύω αυτόματα θα ήταν πιο εύκολο
+    • Personality.hpp/Personality.cpp
+        Κλάση Personality και τα είδη της: Attacker, Defender, Champion, Chancellor, Shogun
+        Στο Personality.cpp περιέχονται οι συναρτήσεις της κλάσης Personality
+
+    • Player.hpp/Player.cpp
+        Κλάση Player
+
+    • GameBoard.hpp/GameBoard.cpp
+        Κλάση GameBoard
+
+    • DeckBuilder.hpp/DeckBuilder.cpp και TypeConverter.hpp/TypeConverter.cpp
+        Τα βοητικά αρχεία της εργασίας που δόθηκαν
+
+    • CardTextes.txt
+        Ιαπωνικές φράσεις που εισάγονται στο πεδίο cardText των GreenCard
+
+    • main.cpp
+        Η συνάρτηση main
+
+    • Makefile
+
+Μεταγλώττιση
+    • g++ -o ex main.cpp DeckBuilder.cpp Personality.cpp Player.cpp GameBoard.cpp TypeConverter.cpp
+
+Εκτέλεση
+    • ./ex
+
+Αναπαραστάσεις δεδομένων- Παραδοχές- Αιτιολογήσεις σχεδιαστικών επιλογών
+    1. Card.hpp
+        • Η κλάση Card είναι abstract και οι κλάσεις GreenCard, BlackCard είναι υποκλάσεις αυτής.
+        • Στην κλάση Card τα μέλη-δεδομένα cost και isTapped είναι protected για να μπορούν να αρχικοποιηθούν ή να τροποποιηθούν στις υποκλάσεις της. Ομοίως για την GreenCard και τα μέλη της attackBonus, defenseBonus, minimumHonor, effectBonus, effectCost.
+        • Constructor της GreenCard: Το πεδίο cardText αρχικοποιείται από φράσεις του αρχείου CardTextes.txt.
+
+    2. Follower.hpp, Item.hpp, Holding.hpp, Personality.hpp/Personality.cpp
+        Τα πεδία τους αρχικοποιύνται ανάλογα το type τους με τις τιμές που έχουν δοθεί στα βοηθητικά αρχεία της εργασίας Followers_and_Weapons.txt και Personalities_and_Holdings.txt
+
+    3. Player.hpp/ Player.cpp
+        • 
+        • 
+        • 
+        ...
+        • battlePhase:
+
+    4. GameBoard.hpp/GameBoard.cpp
+        • initializeGameBoard:
+            Ως όρισμα δίνεται ο αριθμός των παιχτών καθώς το πλήθος των διάφορων κατηγοριών καρτών που επιτρέπεται να έχουν στην κατοχή τους οι παίχτες ορίζεται από το βοηθητικό αρχείο DeckBuilder.hpp που δόθηκε.
+        • checkWinningCondition:
+            Η συνάρτηση ελέγχει τον αριθμό των επαρχιών κάθε παίχτη. Σε περίπτωση που έχουν καταστραφεί οι επαρχίες όλων των παιχτών εκτός από έναν, αυτός είναι ο νικητής και επιστρέφεται η σειρά προτεραιότητας παιξίματός του. Διαφορετικά, η συνάρτηση επιστρέφει -1.
+        • gameplay:
+            Εκτελούνται γύροι μέχρι να βρεθεί νικητής. Κάθε φάση εκτελείται από όλους τους παίχτες σύμφωνα με τη σειρά προτεραιότητας. Αν έχουν καταστραφεί όλες οι επαρχίες ενός παίχτη σημαίνει ότι έχει χάσει, επομένως δεν συμμετέχει στις φάσεις παιχνιδιού. Η checkWinningCondition εκτελείται μετά από κάθε Battle Phase.

@@ -44,7 +44,7 @@ int GameBoard::checkWinningCondition(){
 void GameBoard::gameplay(){
 	int winner= -1;
 
-	while(1){ //Rounds until winner is foun
+	while(1){ //Rounds until winner is found
 		cout<< "\033[1;35mSTARTING PHASE\033[0m"<< endl;
 
 		for(int i=0; i< players.size(); i++){
