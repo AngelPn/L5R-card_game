@@ -350,7 +350,7 @@ void Player::battlePhase(Player *p){
 					"Attacker's points > Defender's points"<< endl<<
 					"Defender loses all of the defensive Personalities"<< endl<<
 					"Attacker loses followers or personalities from Arena's army that attack>= points_attacker- points_defender"<< endl<<
-					"Tapped every Personality and Followers that have survived. Items of Personality lose one durability"; endl;
+					"Tapped every Personality and Followers that have survived. Items of Personality lose one durability"<< endl;
 			}
 			else if(points_attacker == points_defender){
 				//Attacker loses all of the attacking personalities and followers
@@ -605,14 +605,22 @@ void Player::checkChains(Holding* holding)
 
 	}
 
-	if (upper != NULL) //if a possible upper holding connection is decided
+	if (upper != NULL){ //if a possible upper holding connection is decided
 		holding->setUpperHolding(upper);  //make connection
-	if (sub != NULL) //if a possible sub holding connection is decided
-		holding->setSubHolding(sub); //make connection
+		upper->setSubHolding(holding);	  //connection is two-way
+	}
+	if (sub != NULL){ //if a possible sub holding connection is decided
+		holding->setSubHolding(sub); 	  //make connection
+		sub->setUpperHolding(holding);	  //connection is two-way	
+	}
 
 	if (upper != NULL || sub !=NULL) //if at least one connection was made
 	{
 		holding->equipBonus();  //update harvest value of holding with bonus
+		if(upper!=NULL)
+			upper->equipBonus(); //update harvest value of upper with bonus, if it exists 
+		if(sub!=NULL)
+			sub->equipBonus();   //update harvest value of sub with bonus, if it exists
 		cout << "Connections made , bonuses equipped " << endl << endl;
 	}
 

@@ -63,7 +63,7 @@ public:
 	}
 
 	virtual void print() const{
-		std::cout<< "\033[1;31mCost: \033[0m"<< cost<< "\033[1;31m\nHarvest Value: \033[0m"<< harvestValue<< "\n";
+		std::cout<< "\033[1;31mCost: \033[0m"<< cost<< "\033[1;31m\nHarvest Value: \033[0m"<< harvestValue<< "\033[1;31m\nTapped: \033[0m" << ((isTapped) ? "yes" : "no") << std::endl;
 		BlackCard::print();
 	}
 };
