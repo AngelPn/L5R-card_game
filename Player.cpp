@@ -407,25 +407,25 @@ void Player::battlePhase(Player *p){
 					"Defender loses followers or personalities from arena's army that attack>= points_attacker- points_defender"<< endl<<
 					"Attacker loses all of the attacking Personalities and Followers"<< endl;
 			}
-		}
-		cout<< "Surviving Personalities lose a point of honour"<< endl;
-		//Surviving Personalities lose a point of honour
-		for(int i= 0; i< arena.size(); i++){
-			army[arena[i]]->decrement_honour();
-			if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
-				army[arena[i]]->performSeppuku();
-				army.erase(army.begin()+ arena[i]); //Destroy the Personality
-				decrease_arena(i);
-				arena.erase(arena.begin()+ i); //Erase the Personality from Arena
+			cout<< "Surviving Personalities lose a point of honour"<< endl;
+			//Surviving Personalities lose a point of honour
+			for(int i= 0; i< arena.size(); i++){
+				army[arena[i]]->decrement_honour();
+				if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
+					army[arena[i]]->performSeppuku();
+					army.erase(army.begin()+ arena[i]); //Destroy the Personality
+					decrease_arena(i);
+					arena.erase(arena.begin()+ i); //Erase the Personality from Arena
+				}
 			}
-		}
-		for(int i= 0; i< p->arena.size(); i++){
-			p->army[arena[i]]->decrement_honour();
-			if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
-				p->army[arena[i]]->performSeppuku();
-				p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
-				p->decrease_arena(i);
-				p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
+			for(int i= 0; i< p->arena.size(); i++){
+				p->army[arena[i]]->decrement_honour();
+				if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
+					p->army[arena[i]]->performSeppuku();
+					p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
+					p->decrease_arena(i);
+					p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
+				}
 			}
 		}
 		cout<< "Print "<< this->name<< "'s Arena:"<< endl;
