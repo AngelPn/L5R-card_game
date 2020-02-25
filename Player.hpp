@@ -48,6 +48,7 @@ public:
 
 	//Battle Phase functions
 	void battlePhase(Player *p);
+	void decrease_arena(int pos);
 	bool hasArmy();
 
 	//Economy Phase functions

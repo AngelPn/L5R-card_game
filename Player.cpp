@@ -249,6 +249,11 @@ bool Player::hasArmy(){
 	else return true;
 }
 
+void decrease_arena(int pos){
+	for(i= pos+1; i< arena.size(); i++)
+		arena[i]--;
+}
+
 void Player::battlePhase(Player *p){
 	//All of the cards in Army are untapped because of the startingPhase
 	cout<< this->name<< ", choose the number of untapped Personalities in Army to defense/battle: "<< endl<<
@@ -330,6 +335,7 @@ void Player::battlePhase(Player *p){
 					else{
 						lost_points+= army[arena[k]]->get_attack();
 						army.erase(army.begin()+ arena[k]); //delete the Personality
+						decrease_arena(k);
 						arena.erase(arena.begin()+ k);
 					}
 
@@ -387,6 +393,7 @@ void Player::battlePhase(Player *p){
 					else{
 						lost_points+= p->army[arena[k]]->get_attack();
 						p->army.erase(p->army.begin()+ arena[k]); //destroy the Personality
+						p->decrease_arena(k);
 						p->arena.erase(p->arena.begin()+ k);
 					}
 
@@ -408,6 +415,7 @@ void Player::battlePhase(Player *p){
 			if(army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				army[arena[i]]->performSeppuku();
 				army.erase(army.begin()+ arena[i]); //Destroy the Personality
+				decrease_arena(i);
 				arena.erase(arena.begin()+ i); //Erase the Personality from Arena
 			}
 		}
@@ -416,6 +424,7 @@ void Player::battlePhase(Player *p){
 			if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
 				p->army[arena[i]]->performSeppuku();
 				p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
+				p->decrease_arena(i);
 				p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
 			}
 		}
