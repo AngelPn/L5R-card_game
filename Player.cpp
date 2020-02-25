@@ -249,8 +249,8 @@ bool Player::hasArmy(){
 	else return true;
 }
 
-void decrease_arena(int pos){
-	for(i= pos+1; i< arena.size(); i++)
+void Player::decrease_arena(int pos){
+	for(int i= pos+1; i< arena.size(); i++)
 		arena[i]--;
 }
 
