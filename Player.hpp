@@ -24,6 +24,8 @@ private:
 	int numberOfProvinces;
 	vector<BlackCard*> provinces;
 	unsigned int money;  //amount of money the player currently has
+	unsigned int roundMoney; //amount of money the player has at beginning of round;
+
 
 public:
 	std::string name;

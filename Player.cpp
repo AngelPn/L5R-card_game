@@ -22,6 +22,7 @@ Player::Player(const std::string &name){
 
 	holdings.push_back(new Stronghold);
 	money = holdings[0]->initialMoney();
+	roundMoney = money;
 	numberOfProvinces= NO_PROVINCES;
 
 	for(int i=0; i< numberOfProvinces; i++){
@@ -103,9 +104,11 @@ void Player::revealProvinces()
 
 void Player::printHand() const
 {
+	int flag = 1;
 	cout << "Printing cards in hand : " << endl << endl;
 	for (vector<GreenCard *>::const_iterator it = hand.begin(); it != hand.end(); ++it)
 	{
+		cout<< flag++ << ")"<< endl;
 		(*it)->print();
 	}
 }
@@ -134,7 +137,7 @@ void Player::equipPhase()
 		cout << "No army found, phase is skipped :(" << endl << endl;
 		return;
 	}
-	else if (!money && holdings.size() == 1)
+	else if (!money && holdings.size() == 0)
 	{
 		cout << "No money and holdings available (you're broke dude), phase is skipped :(" << endl << endl;
 		return;
@@ -233,13 +236,28 @@ void Player::equipPhase()
 		hand.erase(hand.begin() + (card-1)); //erase card from hand
 
 	}
+
+
+	//HERE: money == roundMoney + the sum of all the harvest values of the tapped holdings - the sum of the cost of the cards bought
+	//Thus if money - roundMoney > 0 => the sum of all the harvest values of the tapped holdings > the sum of the cost of the cards bought =>
+	//some money (exactly money - roundMoney) from the tapping of the holdings was not used and it needs to be substracted
+	//so in this case the new value of money would be money - (money - roundMoney) == roundMoney , hence the assignment money = roundMoney
+	//else no substraction is made ,money remains intact and is assigned to roundMoney.
+
+	cout << "Any remainder of the money from the tapped holdings is lost " << endl;
+	money = (money > roundMoney) ? roundMoney : money ;  //if money  > roundMoney that means that some money from the tapping of the holdings was not used
+	roundMoney = money;									 //and it needs to be substracted , thus money is set to be roundMoney
+	cout << "Available money now is " << money << endl;
+
 }
 
 void Player::printArmy() const
 {
+	int flag = 1;
 	cout << "Printing army : " << endl << endl;
 	for (vector<Personality*>::const_iterator it = army.begin(); it != army.end(); ++it)
 	{
+		cout<< flag++ << ")"<< endl;
 		(*it)->print();
 	}
 }
@@ -438,9 +456,11 @@ void Player::battlePhase(Player *p){
 
 void Player::printHoldings() const
 {
+	int flag = 1;
 	cout << "Printing holdings : " << endl << endl;
 	for (vector<Holding*>::const_iterator it = holdings.begin(); it != holdings.end(); ++it)
 	{
+		cout<< flag++ << ")"<< endl;
 		(*it)->print();
 	}
 
@@ -499,6 +519,12 @@ void Player::economyPhase()
 		provinces[i-1] = dynastyDeck->front(); //remove card from provinces and replace it with top of dynasty-deck (not revealed)
 	  dynastyDeck->pop_front();
 	}
+
+	cout << "Any remainder of the money from the tapped holdings is lost " << endl;
+	money = (money > roundMoney) ? roundMoney : money ;
+	roundMoney = money;
+	cout << "Available money now is " << money << endl;
+
 }
 
 
@@ -507,7 +533,7 @@ void Player::tapHoldings()
 	char input;
 	unsigned int i, count = 0;
 
-	while (holdings.size() -1 -count > 0) //while player possesses untapped holdings (other than stronghold)
+	while (holdings.size() - count > 0) //while player possesses untapped holdings (other than stronghold)
 	{
 		input = '0';
 		i=0;
@@ -521,21 +547,21 @@ void Player::tapHoldings()
 
 		if (input == 'y')
 		{
-			while ( i < 1 || i > (holdings.size()-1))
+			while ( i < 1 || i > (holdings.size()))
 			{
 				this->printHoldings();
-				cout << "Choose a holding to tap : (1-" << holdings.size() - 1 << ")" << endl;
+				cout << "Choose a holding to tap : (1-" << holdings.size() << ")" << endl;
 				cin >> i;
 			}
 
-			if (holdings[i]->is_tapped() == true)
+			if (holdings[i-1]->is_tapped() == true)
 			{
 				cout << "Card already tapped can't be used for the remainder of the round " << endl;
 				continue;
 			}
 
-			holdings[i]->tap(); //card is tapped
-			money += holdings[i]->get_harvestValue();
+			holdings[i-1]->tap(); //card is tapped
+			money += holdings[i-1]->get_harvestValue();
 			count++;
 			cout << "Holding tapped and its harvest value was added to your money " << endl << endl;
 		}
