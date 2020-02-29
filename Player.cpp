@@ -313,7 +313,7 @@ void Player::battlePhase(Player *p){
 			points_attacker+= army[arena[i]]->get_attack();
 
 		for(int i= 0; i< p->arena.size(); i++)
-			points_defender+= p->army[arena[i]]->get_defense();
+			points_defender+= p->army[p->arena[i]]->get_defense();
 
 		int province_defense= p->holdings[0]->get_initialDefense(); //Get the province defense points from StrongHold
 		points_defender+= province_defense;
@@ -327,7 +327,7 @@ void Player::battlePhase(Player *p){
 			p->numberOfProvinces--; //Decrement defender's total number of provinces
 			//Defender loses all of the defensive personalities
 			for(int i=0; i< p->arena.size(); i++)
-				p->army.erase(p->army.begin()+ arena[i]);
+				p->army.erase(p->army.begin()+ p->arena[i]);
 			p->arena.clear();
 			//Print a message
 			cout<< "Attacker's points - Defender's points > Province's defense"<< endl<<
@@ -339,7 +339,7 @@ void Player::battlePhase(Player *p){
 			if(points_attacker > points_defender){
 				//Defender loses all of the defensive personalities
 				for(int i=0; i< p->arena.size(); i++)
-					p->army.erase(p->army.begin()+ arena[i]);
+					p->army.erase(p->army.begin()+ p->arena[i]);
 				p->arena.clear();
 
 				//Attacker loses followers or personalities from arena's army that attack>= points_attacker- points_defender
@@ -384,7 +384,7 @@ void Player::battlePhase(Player *p){
 
 				//Defender loses all of the defensive personalities and followers
 				for(int i=0; i< p->arena.size(); i++)
-					p->army.erase(p->army.begin()+ arena[i]);
+					p->army.erase(p->army.begin()+ p->arena[i]);
 				p->arena.clear();
 
 				//Print a message
@@ -404,13 +404,13 @@ void Player::battlePhase(Player *p){
 				int lost_points= 0, k= 0;
 				while(lost_points < (points_defender - points_defender)){
 
-					if(p->army[arena[k]]->hasFollowers()){ //If the Personality has followers
-						p->army[arena[k]]->destroyFollower(&lost_points);
+					if(p->army[p->arena[k]]->hasFollowers()){ //If the Personality has followers
+						p->army[p->arena[k]]->destroyFollower(&lost_points);
 						continue;
 					}
 					else{
-						lost_points+= p->army[arena[k]]->get_attack();
-						p->army.erase(p->army.begin()+ arena[k]); //destroy the Personality
+						lost_points+= p->army[p->arena[k]]->get_attack();
+						p->army.erase(p->army.begin()+ p->arena[k]); //destroy the Personality
 						p->decrease_arena(k);
 						p->arena.erase(p->arena.begin()+ k);
 					}
@@ -434,15 +434,17 @@ void Player::battlePhase(Player *p){
 					army.erase(army.begin()+ arena[i]); //Destroy the Personality
 					decrease_arena(i);
 					arena.erase(arena.begin()+ i); //Erase the Personality from Arena
+					i--;
 				}
 			}
 			for(int i= 0; i< p->arena.size(); i++){
-				p->army[arena[i]]->decrement_honour();
-				if(p->army[arena[i]]->get_honour() == 0){ //Perfom suicide
-					p->army[arena[i]]->performSeppuku();
-					p->army.erase(p->army.begin()+ arena[i]); //Destroy the Personality
+				p->army[p->arena[i]]->decrement_honour();
+				if(p->army[p->arena[i]]->get_honour() == 0){ //Perfom suicide
+					p->army[p->arena[i]]->performSeppuku();
+					p->army.erase(p->army.begin()+ p->arena[i]); //Destroy the Personality
 					p->decrease_arena(i);
 					p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
+					i--;
 				}
 			}
 		}
