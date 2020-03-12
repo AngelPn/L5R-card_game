@@ -5,6 +5,7 @@ Simulation of the trading cards game "Legend of the Five Rings".
 # Compilation and Execution
 
 Type the following commands inside the directory project:
+
     • make run: compile & run
     • make clean: clean the directory
     • make: compile only
