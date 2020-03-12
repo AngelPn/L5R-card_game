@@ -26,7 +26,7 @@ Type the following commands inside the directory project:
 
 The game’s rule guides can be found in the file "OOPproj_2020.pdf". For the official rule guides follow this link:
 https://www.fantasyflightgames.com/en/products/legend-of-the-five-rings-the-card-game/ .
-The users of the program, as players, determine the course of the game through their choices. It’s up to the users to find the right strategy in order to win. The game’s control of the flow and phase switching is done automatically by the program. At the start of the game, the user gives the number of the players and their names. During execution of the program, suitable messages are printed to determine the phase of the game, the player’s turn, the player’s cards and the choices he/she can make through questions. Input the right answers and have fun!
+The users of the program, as players, determine the course of the game through their choices. It’s up to the users to find the right strategy in order to win. The game’s control of the flow and phase switching is done automatically by the program. At the start of the game, the user gives the number of the players and their names. During execution of the program, appropriate messages are printed to determine the phase of the game, the player’s turn, the player’s cards and the choices that can be made through questions. Input the right answers and have fun!
 
 # NOTE
 
