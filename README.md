@@ -36,8 +36,8 @@ Even though there are places in the code where we have tried to incorporate erro
 
                     Card
                 /       	\
-         GreenCard 	    	    BlackCard
-        /		\	    	    /		\
+         GreenCard 	    	 BlackCard
+        /		\	    	  /		\
     Follower 	Item	Holding 	Personality
        |	    	|		|	    	|
       {…}	    	{…}		{…}	    	{…}
