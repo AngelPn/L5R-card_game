@@ -170,7 +170,7 @@ void Player::equipPhase()
 		if (input == 'n')
 		{
 			cout << "Well, okay then, get ready for battle phase" << endl << endl;
-			return; //exit equip phase
+			break; //exit equip phase
 		}
 		while (soldier < 1 || soldier > army.size())
 		{
@@ -326,9 +326,12 @@ void Player::battlePhase(Player *p){
 			p->provinces.erase(p->provinces.begin()+ n-1); //Destroy defender's province
 			p->numberOfProvinces--; //Decrement defender's total number of provinces
 			//Defender loses all of the defensive personalities
-			for(int i=0; i< p->arena.size(); i++)
-				p->army.erase(p->army.begin()+ p->arena[i]);
-			p->arena.clear();
+			for(int i=0; i< p->arena.size(); i++){
+				p->army.erase(p->army.begin()+ p->arena[i]); //Destroy the Personality
+				p->decrease_arena(i);
+				p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
+				i--;
+			}
 			//Print a message
 			cout<< "Attacker's points - Defender's points > Province's defense"<< endl<<
 				"Attacker "<< this->name<< " won the battle. Enemy's province is destroyed!"<< endl<<
@@ -338,13 +341,16 @@ void Player::battlePhase(Player *p){
 		else{ //Province is not destroyed
 			if(points_attacker > points_defender){
 				//Defender loses all of the defensive personalities
-				for(int i=0; i< p->arena.size(); i++)
-					p->army.erase(p->army.begin()+ p->arena[i]);
-				p->arena.clear();
+				for(int i=0; i< p->arena.size(); i++){
+					p->army.erase(p->army.begin()+ p->arena[i]); //Destroy the Personality
+					p->decrease_arena(i);
+					p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
+					i--;
+				}
 
 				//Attacker loses followers or personalities from arena's army that attack>= points_attacker- points_defender
 				int lost_points= 0, k= 0;
-				while(lost_points < (points_defender - points_defender)){
+				while(lost_points < (points_attacker - points_defender)){
 
 					if(army[arena[k]]->hasFollowers()){ //If the Personality has followers
 						army[arena[k]]->destroyFollower(&lost_points);
@@ -355,6 +361,7 @@ void Player::battlePhase(Player *p){
 						army.erase(army.begin()+ arena[k]); //delete the Personality
 						decrease_arena(k);
 						arena.erase(arena.begin()+ k);
+						k--;
 					}
 
 					if(k == army.size()) break;
@@ -373,19 +380,25 @@ void Player::battlePhase(Player *p){
 					"Province is not destroyed!"<< endl<<
 					"Attacker's points > Defender's points"<< endl<<
 					"Defender loses all of the defensive Personalities"<< endl<<
-					"Attacker loses followers or personalities from Arena's army that attack>= points_attacker- points_defender"<< endl<<
+					"Attacker loses followers or personalities from Arena's army that attack>= attacker's points - defender's points"<< endl<<
 					"Tapped every Personality and Followers that have survived. Items of Personality lose one durability"<< endl;
 			}
 			else if(points_attacker == points_defender){
 				//Attacker loses all of the attacking personalities and followers
-				for(int i=0; i< arena.size(); i++)
-					army.erase(army.begin()+ arena[i]);
-				arena.clear();
+				for(int i=0; i< arena.size(); i++){
+					army.erase(army.begin()+ arena[i]); //Destroy the Personality
+					decrease_arena(i);
+					arena.erase(arena.begin()+ i); //Erase the Personality from Arena
+					i--;
+				}
 
 				//Defender loses all of the defensive personalities and followers
-				for(int i=0; i< p->arena.size(); i++)
-					p->army.erase(p->army.begin()+ p->arena[i]);
-				p->arena.clear();
+				for(int i=0; i< p->arena.size(); i++){
+					p->army.erase(p->army.begin()+ p->arena[i]); //Destroy the Personality
+					p->decrease_arena(i);
+					p->arena.erase(p->arena.begin()+ i); //Erase the Personality from Arena
+					i--;
+				}
 
 				//Print a message
 				cout<< "Attacker's points - Defender's points < Province's defense"<< endl<<
@@ -396,13 +409,16 @@ void Player::battlePhase(Player *p){
 			}
 			else{
 				//Attacker loses all of the attacking personalities and followers
-				for(int i=0; i< arena.size(); i++)
-					army.erase(army.begin()+ arena[i]);
-				arena.clear();
+				for(int i=0; i< arena.size(); i++){
+					army.erase(army.begin()+ arena[i]); //Destroy the Personality
+					decrease_arena(i);
+					arena.erase(arena.begin()+ i); //Erase the Personality from Arena
+					i--;
+				}
 
 				//Defender loses followers or personalities from arena's army that attack>= points_attacker- points_defender
 				int lost_points= 0, k= 0;
-				while(lost_points < (points_defender - points_defender)){
+				while(lost_points < (points_defender - points_attacker)){
 
 					if(p->army[p->arena[k]]->hasFollowers()){ //If the Personality has followers
 						p->army[p->arena[k]]->destroyFollower(&lost_points);
@@ -413,6 +429,7 @@ void Player::battlePhase(Player *p){
 						p->army.erase(p->army.begin()+ p->arena[k]); //destroy the Personality
 						p->decrease_arena(k);
 						p->arena.erase(p->arena.begin()+ k);
+						k--;
 					}
 
 					if(k == p->army.size()) break;
@@ -422,7 +439,7 @@ void Player::battlePhase(Player *p){
 				cout<< "Attacker's points - Defender's points < Province's defense"<< endl<<
 					"Province is not destroyed!"<< endl<<
 					"Attacker's points < Defender's points"<< endl<<
-					"Defender loses followers or personalities from arena's army that attack>= points_attacker- points_defender"<< endl<<
+					"Defender loses followers or personalities from arena's army that attack>= defender's points - attacker's points"<< endl<<
 					"Attacker loses all of the attacking Personalities and Followers"<< endl;
 			}
 			cout<< "Surviving Personalities lose a point of honour"<< endl;
@@ -492,7 +509,7 @@ void Player::economyPhase()
 		}
 
 		if (input == 'n')
-			return; //exit economy phase
+			break; //exit economy phase
 
 		while (i < 1 || i > provinces.size())
 		{
